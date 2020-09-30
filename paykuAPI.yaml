@@ -1,0 +1,2490 @@
+openapi: 3.0.0
+servers:
+  - url: 'https://app.payku.cl/'
+    description: Default server
+  - url: 'https://des.payku.cl/'
+    description: Sandbox server
+info:
+  description: |
+    
+    # Visión general
+    Podrás usar nuestra API para acceder a los distintos endpoints, donde te 
+    permitirá generar y gestionar pagos mediante distintos métodos y obtener 
+    información de ellos.
+
+    El API está organizado alrededor de REST. Posee URLs predecibles y 
+    orientadas a recursos, y utiliza códigos de respuesta HTTP para indicar el 
+    resultado de la llamada. Todas las respuestas de la API retornan objetos 
+    JSON, incluyendo los errores
+
+    El solicitante debe buscar un código de resultado 200. Si se recibe 
+    cualquier código de resultado distinto de 200, la solicitud o la respuesta 
+    no es válida, lo que significa que los campos no pasaron los controles de 
+    validación de parte de payku. Utilizamos características incluidas en el 
+    protocolo HTTP, como autenticación, los cuales son soportados por la gran 
+    mayoría de los clientes HTTP.
+
+    # Configuración
+    Texto
+
+    ## Autentificación
+    Payku utiliza Token Based Authentication sobre HTTPS para la autenticación.
+    Para tener acceso a nuestra API, accede a tu cuenta en la sección de 
+    Integración encontraras la opción de Tokens integración y API . Los request
+    no autenticados o incorrectos retornarán una respuesta de token Invalido.
+    
+
+    ## API Seguridad
+    Cada solicitud, es requerido tener incluido en el header:
+      - Authorization: Bearer **TOKEN-PÚBLICO**
+
+    ## Acceso al API
+    Si tienes una cuenta en payku, puedes acceder al API REST mediante los siguientes endpoints:
+    
+    |    **Site**   |**BASE URL FOR REST ENDPOINT** |
+    |     :---:     |            :---:              |
+    |**Production** |https://app.payku.cl/api       |
+    |**Sandbox**    |https://des.payku.cl/api       |
+
+    -	Producción: proporciona acceso directo para generar transacciones reales. 
+    - Sandbox: permite probar su integración sin afectar los datos reales.
+
+  version: "1.0.0"
+  title: Payku API
+  termsOfService: "https://payku.cl/legal/"
+  contact:
+    email: contacto@payku.cl
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+  x-logo:
+    url: 'https://storage.googleapis.com/storage-payku-prd/public/img/payku2020_2.svg'
+tags:
+  - name: Suscripcion
+    description: Permite la vinculación de un plan a clientes, para posteriormente realizar cargos recurrentes automáticamente, según se defina en cada plan.
+  - name: Transaccion
+    description:
+  - name: Evento
+    description: 
+  - name: Marketplace
+    description: Permite el registro de clientes, para posteriormente realizar la distribución según porcentaje asignado.
+paths:
+  /api/suclient:
+    post:
+      tags:
+        - Suscripcion
+      summary: Administrar clientes
+      description: Esto metodo permite la insercion de datos de un cliente.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminClientResponse'
+        '400':
+          description: Error en la solicitud.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400'
+        '401':
+          description: Token Publico incorrecto.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error401'
+      x-codeSamples:
+        - lang: 'PHP'
+          source: |
+            $client = new \GuzzleHttp\Client();         
+              $body = $client->request('POST', 'https://[base URL]/api/suclient', [
+                'json' => [                
+                  'email' => 'email2@domain.cl', 
+                  'name' => 'name', 
+                  'phone' => 'phone', 
+                  'address' => 'address', 
+                  'country' => 'country', 
+                  'region' => 'region', 
+                  'city' => 'city', 
+                  'postal_code' => 'postal_code',
+                  ],  
+                'headers' => [                 
+                  'Sign' => '0d04820b87c80f79a89235fcd256d9b6cddee2fc15fa50034c1903370f3de8c6',                 
+                  'Authorization' => 'Bearer 8c872egfdg996f8b418c872e996f8b418c872e996f8b41'              
+                ]           
+              ])->getBody();           
+            $response = json_decode($body); 
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  description: Email del cliente.
+                  type: string
+                  format: email
+                  example: example@domain.com
+                name:
+                  description: Nombre del cliente
+                  type: string
+                  example: "name"
+                phone:
+                  description: Telefono del cliente.
+                  type: string
+                  example: "phone"
+                address:
+                  description: Direccion del cliente.
+                  type: string
+                  example: "address"
+                country:
+                  description: Pais del cliente.
+                  type: string
+                  example: "country"
+                region:
+                  description: Region del cliente.
+                  type: string
+                  example: "region"
+                city: 
+                  description: Ciudad del cliente.
+                  type: string
+                  example: "city"
+                postal_code:
+                  description: Código postal del cliente.  
+                  type: string
+                  example: "postal_code"
+              required:
+                - email
+                - name
+                - phone
+
+  /api/suclient/{identificadorTransaccion}:
+    get:
+      tags:
+        - Suscripcion
+      summary: Consulta datos de cliente
+      description: Este método permite obtener el detalles de un cliente.
+      operationId: getClientById
+      parameters:
+        - name: id
+          in: path
+          description: Identificador único de transacción por payku.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientIdResponse'
+        '400':
+          description: Error en la solicitud.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400Event'
+        '401':
+          description: Token Publico incorrecto.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error401'
+      x-codeSamples:
+        - lang: 'PHP'
+          source: |
+            $client = new \GuzzleHttp\Client();         
+              $body = $client->request('GET', 'https://[base URL]/api/suclient/', [             
+                'json' => [       
+                  'id' => cla90927fa9b30e1dfffa0,             
+                ],             
+                'headers' => [                 
+                  'Sign' => '0d04820b87c80f79a89235fcd256d9b6cddee2fc15fa50034c1903370f3de8c6',                 
+                  'Authorization' => 'Bearer 8c872egfdg996f8b418c872e996f8b418c872e996f8b41'              
+                ]           
+              ])->getBody();           
+            $response = json_decode($body);
+
+  /api/suclient/{identificadorCliente}:
+    put:
+      tags:
+        - Suscripcion
+      summary: Actualizar datos del cliente
+      description: Esto metodo permite la actualizacion de los datos de un cliente.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModifyClientResponse'
+        '400':
+          description: Error en la solicitud.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400'
+        '401':
+          description: Token Publico incorrecto.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error401'
+      x-codeSamples:
+        - lang: 'PHP'
+          source: |
+            $client = new \GuzzleHttp\Client();         
+              $body = $client->request('POST', 'https://[base URL]//api/suclient/', [             
+                'json' => [       
+                  'id' => cla90927fa9b30e1dfffa0,    
+                  'email' => example2@domain.com, 
+                  'name' => 'name2', 
+                  'phone' => 'phone2', 
+                  'address' => 'address2', 
+                  'country' => 'country2', 
+                  'region'  => 'region2', 
+                  'city'    => 'city2', 
+                  'postal_code' => 'postal_code2',
+                ],  
+              ],             
+              'headers' => [                 
+                'Sign' => '0d04820b87c80f79a89235fcd256d9b6cddee2fc15fa50034c1903370f3de8c6',                 
+                'Authorization' => 'Bearer 8c872egfdg996f8b418c872e996f8b418c872e996f8b41'              
+              ]           
+            ])->getBody();           
+            $response = json_decode($body);
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  description: Identificador único de transacción por payku.
+                  type: string
+                  example: "cla90927fa9b30e1dfffa0"
+                name:
+                  description: Nombre del cliente
+                  type: string
+                  example: "name2"
+                phone:
+                  description: Telefono del cliente.
+                  type: string
+                  example: "phone2"
+                address:
+                  description: Direccion del cliente.
+                  type: string
+                  example: "address2"
+                country:
+                  description: Pais del cliente.
+                  type: string
+                  example: "country2"
+                region:
+                  description: Region del cliente.
+                  type: string
+                  example: "region2"
+                city: 
+                  description: Ciudad del cliente.
+                  type: string
+                  example: "city2"
+                postal_code:
+                  description: Código postal del cliente.  
+                  type: string
+                  example: "postal_code2"
+              required:
+                - id
+
+  /api/suclient/customers:
+    post:
+      tags:
+        - Suscripcion
+      summary: Obtener todos los clientes
+      description: Esto metodo permite la obtener todos los clientes asociados a un id de usuario.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModifyClientResponse'
+        '400':
+          description: Error en la solicitud.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400'
+        '401':
+          description: Token Publico incorrecto.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error401'
+      x-codeSamples:
+        - lang: 'PHP'
+          source: |
+            $client = new \GuzzleHttp\Client();         
+              $body = $client->request('POST', 'https://[base URL]/api/suclient/customers', [             
+                'json' => [       
+                  'id' => 8c872e996f8b418c872e996f8b8c872e996f8b41,             
+                ],             
+                'headers' => [                 
+                  'Sign' => '0d04820b87c80f79a89235fcd256d9b6cddee2fc15fa50034c1903370f3de8c6',                 
+                  'Authorization' => 'Bearer 8c872egfdg996f8b418c872e996f8b418c872e996f8b41'              
+                ]           
+              ])->getBody();           
+            $response = json_decode($body); 
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  description: Identificador único de usuario por payku.
+                  type: string
+                  example: 8c872e996f8b418c872e996f8b8c872e996f8b41
+              required:
+                - id
+
+  /api/suclient/delete/{identificadorCliente}:
+    delete:
+      tags:
+        - Suscripcion
+      summary: Eliminar cliente
+      description: Esto metodo permite la eliminacion de un cliente asociados a un id de usuario.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteClientResponse'
+        '400':
+          description: Error en la solicitud.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400'
+        '401':
+          description: Token Publico incorrecto.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error401'
+      x-codeSamples:
+        - lang: 'PHP'
+          source: |
+            $client = new \GuzzleHttp\Client();         
+              $body = $client->request('POST', 'https:// [base URL]/api/suclient/delete', [             
+                'json' => [       
+                  'id' => cla90927fa9b30e1dfffa0,             
+                  ],             
+                  'headers' => [                 
+                    'Sign' => '0d04820b87c80f79a89235fcd256d9b6cddee2fc15fa50034c1903370f3de8c6',                 
+                    'Authorization' => 'Bearer 8c872egfdg996f8b418c872e996f8b418c872e996f8b41'              ]           
+                  ])->getBody();           
+                $response = json_decode($body); 
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  description: Identificador único de usuario por payku.
+                  type: string
+                  example: 8c872e996f8b418c872e996f8b8c872e996f8b41
+              required:
+                - id
+
+  /api/suclient/sususcription:
+    post:
+      tags:
+        - Suscripcion
+      summary: Insertar datos para la suscripcion
+      description: Esto metodo permite la insercion de datos para una suscripcion.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateSuscriptionResponse'
+        '400':
+          description: Error en la solicitud.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400'
+        '401':
+          description: Token Publico incorrecto.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error401'
+      x-codeSamples:
+        - lang: 'PHP'
+          source: |
+            $client = new \GuzzleHttp\Client();         
+              $body = $client->request('POST', 'https://[base URL]/api/ sususcription, [             
+                'json' => [                
+                  ' plan' => 'pl9697fb170834ad42dd00', 
+                  'client' => ' cl9b1e1dd988694f30fa30',
+                  ], 
+                  'headers' => [                 
+                    'Sign' => '0d04820b87c80f79a89235fcd256d9b6cddee2fc15fa50034c1903370f3de8c6',                 
+                    'Authorization' => 'Bearer 8c872egfdg996f8b418c872e996f8b418c872e996f8b41'              
+                  ]           
+                ])->getBody();           
+              $response = json_decode($body);
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                plan:
+                  description: ID del plan.
+                  type: string
+                  example: pl9697fb170834ad42dd00
+                client:
+                  description: ID del cliente.
+                  type: string
+                  example: cl9b1e1dd988694f30fa30
+              required:
+                - plan
+                - client
+
+  /api/suclient/sutransaction:
+    post:
+      tags:
+        - Suscripcion
+      summary: Insertar datos para la transaccion
+      description: Esto metodo permite la insercion de datos para una transaccion.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateSuTransactionResponse'
+        '400':
+          description: Error en la solicitud.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400'
+        '401':
+          description: Token Publico incorrecto.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error401'
+      x-codeSamples:
+        - lang: 'PHP'
+          source: |
+            $client = new \GuzzleHttp\Client();         
+              $body = $client->request('POST', 'https://[base URL]/api/sutransaction, [             
+                'json' => [                
+                  ' suscription' => sucaab7865dceaff49d8b3, 
+                  'order' => '001', 
+                  'monto' => '10000', 
+                  'description' => ' descripcion'
+                  ], 
+                  'headers' => [                 
+                    'Sign' => '0d04820b87c80f79a89235fcd256d9b6cddee2fc15fa50034c1903370f3de8c6',                 
+                    'Authorization' => 'Bearer 8c872egfdg996f8b418c872e996f8b418c872e996f8b41'              
+                  ]           
+                ])->getBody();           
+              $response = json_decode($body);
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                suscription:
+                  description: Identificador único de suscripción por payku.
+                  type: string
+                  example: sucaab7865dceaff49d8b3
+                amount:
+                  description: Monto.
+                  type: string
+                  example: "10000"
+                order:
+                  description: Orden.
+                  type: string
+                  example: "001"
+                description:
+                  description: Descripcion.
+                  type: string
+                  example: Descripcion
+              required:
+                - suscription
+
+  /api/sususcription/{identificadorTransaccion}:
+    get:
+      tags:
+        - Suscripcion
+      summary: Consulta datos de suscripcion
+      description: Este método permite obtener el detalles de una suscripcion.
+      operationId: getSuscriptionById
+      parameters:
+        - name: id
+          in: path
+          description: Identificador único de transacción por payku.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuscriptionIdResponse'
+        '400':
+          description: Error en la solicitud.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400Event'
+        '401':
+          description: Token Publico incorrecto.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error401'
+      x-codeSamples:
+        - lang: 'PHP'
+          source: |
+            $client = new \GuzzleHttp\Client();         
+              $body = $client->request('GET', 'https://[base URL]/api/sususcription/', [             
+                'json' => [       
+                  'id' => 'sucaab7865dceaff49d8b',             
+                ],             
+                'headers' => [                 
+                  'Sign' => '0d04820b87c80f79a89235fcd256d9b6cddee2fc15fa50034c1903370f3de8c6',                 
+                  'Authorization' => 'Bearer 8c872egfdg996f8b418c872e996f8b418c872e996f8b41'              
+                ]           
+              ])->getBody();           
+            $response = json_decode($body);
+
+  /api/suclient/delete/{identificadorSuscripcion}:
+    delete:
+      tags:
+        - Suscripcion
+      summary: Eliminar suscripcion
+      description: Esto metodo permite la eliminacion de una suscripcion asociada a un id de suscripcion.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteSuscriptionResponse'
+        '400':
+          description: Error en la solicitud.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400'
+        '401':
+          description: Token Publico incorrecto.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error401'
+      x-codeSamples:
+        - lang: 'PHP'
+          source: |
+            $client = new \GuzzleHttp\Client();         
+              $body = $client->request('POST', 'https:// [base URL]/api/sususcription/delete', [             
+                'json' => [       
+                  'id' => sucaab7865dceaff49d8b3,             
+                  ],             
+                  'headers' => [                 
+                    'Sign' => '0d04820b87c80f79a89235fcd256d9b6cddee2fc15fa50034c1903370f3de8c6',                 
+                    'Authorization' => 'Bearer 8c872egfdg996f8b418c872e996f8b418c872e996f8b41'              ]           
+                  ])->getBody();           
+                $response = json_decode($body); 
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  description: Identificador único de suscripción por payku.
+                  type: string
+                  example: sucaab7865dceaff49d8b3
+              required:
+                - id
+
+  /api/suinscriptionscards:
+    post:
+      tags:
+        - Suscripcion
+      summary: Afiliar tarjeta a suscripcion
+      description: Este metodo permite la Insercion de los datos de una tarjeta para suscripción.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardSuscriptionResponse'
+        '400':
+          description: Error en la solicitud.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400'
+        '401':
+          description: Token Publico incorrecto.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error401'
+      x-codeSamples:
+        - lang: 'PHP'
+          source: |
+            $client = new \GuzzleHttp\Client();         
+              $body = $client->request('POST', 'https:// [base URL]/api/suinscriptionscards', [             
+                'json' => [       
+                  'id' => sucaab7865dceaff49d8b3,             
+                  ],             
+                  'headers' => [                 
+                    'Sign' => '0d04820b87c80f79a89235fcd256d9b6cddee2fc15fa50034c1903370f3de8c6',                 
+                    'Authorization' => 'Bearer 8c872egfdg996f8b418c872e996f8b418c872e996f8b41'              ]           
+                  ])->getBody();           
+                $response = json_decode($body); 
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  description: ID de suscripción.
+                  type: string
+                  example: sucaab7865dceaff49d8b3
+              required:
+                - id
+
+  /api/suplan:
+    post:
+      tags:
+        - Suscripcion
+      summary: Inserta los datos de un plan.
+      description: Este metodo permite la Insercion de los datos para la creacion de un plan.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanResponse'
+        '400':
+          description: Error en la solicitud.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400'
+        '401':
+          description: Token Publico incorrecto.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error401'
+      x-codeSamples:
+        - lang: 'PHP'
+          source: |
+            $client = new \GuzzleHttp\Client();         
+              $body = $client->request('POST', 'https:// [base URL]/api/suplan', [             
+                'json' => [       
+                  'id' => sucaab7865dceaff49d8b3,    
+                  'description' => 'descripción de plan 1'         
+                  ],             
+                  'headers' => [                 
+                    'Sign' => '0d04820b87c80f79a89235fcd256d9b6cddee2fc15fa50034c1903370f3de8c6',                 
+                    'Authorization' => 'Bearer 8c872egfdg996f8b418c872e996f8b418c872e996f8b41'              ]           
+                  ])->getBody();           
+                $response = json_decode($body); 
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  description: Nombre del plan.
+                  type: string
+                  example: plan 
+                description:
+                  description: Descripción del plan.
+                  type: string
+                  example: description plan 1
+              required:
+                - name
+
+  /api/suplan/{identificadorPlan}:
+    get:
+      tags:
+        - Suscripcion
+      summary: Consulta datos del plan
+      description: Este método permite obtener el detalles de un plan.
+      operationId: getPlanById
+      parameters:
+        - name: id
+          in: path
+          description: Identificador único de plan por payku.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanIdResponse'
+        '400':
+          description: Error en la solicitud.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400Event'
+        '401':
+          description: Token Publico incorrecto.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error401'
+      x-codeSamples:
+        - lang: 'PHP'
+          source: |
+            $client = new \GuzzleHttp\Client();         
+              $body = $client->request('GET', 'https://[base URL]/api/suplan/', [             
+                'json' => [       
+                  'id' => 'pl4293e97a87195bb9edcd',             
+                ],             
+                'headers' => [                 
+                  'Sign' => '0d04820b87c80f79a89235fcd256d9b6cddee2fc15fa50034c1903370f3de8c6',                 
+                  'Authorization' => 'Bearer 8c872egfdg996f8b418c872e996f8b418c872e996f8b41'              
+                ]           
+              ])->getBody();           
+            $response = json_decode($body);
+
+  /api/suplan/plans:
+    get:
+      tags:
+        - Suscripcion
+      summary: Consulta datos de todos los planes
+      description: Este método permite obtener el detalle de todos los planes.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlanIdResponse'
+        '400':
+          description: Error en la solicitud.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400Event'
+        '401':
+          description: Token Publico incorrecto.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error401'
+      x-codeSamples:
+        - lang: 'PHP'
+          source: |
+            $client = new \GuzzleHttp\Client();         
+              $body = $client->request('GET', 'https://[base URL]/api/suplan/plans', [                       
+                'headers' => [                 
+                  'Sign' => '0d04820b87c80f79a89235fcd256d9b6cddee2fc15fa50034c1903370f3de8c6',                 
+                  'Authorization' => 'Bearer 8c872egfdg996f8b418c872e996f8b418c872e996f8b41'              
+                ]           
+              ])->getBody();           
+            $response = json_decode($body);
+
+  /api/transaction:
+    post:
+      tags:
+        - Transaccion
+      summary: Generar una transacción
+      description: Este método permite crear una orden de pago a **Payku** y recibe como respuesta la **URL** para redirigir el browser del pagador y el **token** que identifica la transacción.
+                  Una vez que el pagador efectúe el pago exitoso, **Payku** notificará el resultado a la página del comercio que se envió en el parámetro **urlnotify**.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponse'
+        '400':
+          description: Error en la solicitud.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400'
+        '401':
+          description: Token Publico incorrecto.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error401'
+      x-codeSamples:
+        - lang: 'cURL'
+          source: |
+            curl -X POST \
+            https://BASE-URL/api/transaction \
+            -H 'Accept: application/json, text/plain, */*' \
+            -H 'Authorization: Bearer TOKEN-PUBLICO \
+            -H 'Content-Type: application/json,application/json' \
+            -H 'Host: BASE-URL \
+            -d '{
+              "email": "test@domain.com",
+              "subject": "Cliente Test",
+              "amount": 5696,
+              "order": "5696"
+            }'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  description: Email del usuario.
+                  type: string
+                  format: email
+                  example: example@domain.com
+                order:
+                  description: Orden del comercio
+                  type: string
+                  example: 98745
+                subject:
+                  description: Descripcion de la orden
+                  type: string
+                  example: test subject
+                amount:
+                  description: Monto de la orden
+                  type: number
+                  example: 25000
+                payment:
+                  description: |
+                    Identificador del medio de pago. Si se envía el identificador, el pagador será redireccionado directamente al medio de pago que se indique.
+                    - 1 Webpay
+                    - 2 Kiphu
+                    - 3 Multicaja Efectivo
+                    - 4 Multicaja Trasnferencia
+                    - 5 Onepay
+                    - 6 Pago46
+                    - 7 Sweetpay
+                    - 99 Todos
+                  type: number
+                  example: 1
+                urlreturn:
+                  description: url de retorno del comercio donde payku redirigirá al pagador.
+                  type: string
+                  format: url
+                  example: https://you_web_site/urlreturn
+                urlnotify: 
+                  description: url callback del comercio donde payku notificara el pago.
+                  type: string
+                  format: url
+                  example: https://you_web_site/urlnotify
+                marketplace:
+                  description: Identificador del marketplace creado por payku. 
+                  type: string
+                  example: ew43r3r4dfsdf43r3t36f8b8c872e996f8b49
+              required:
+                - email
+                - order
+                - subject
+                - amount
+
+  /api/transaction/ID-IDENTIFICADOR:
+    get:
+      tags:
+        - Transaccion
+      summary: 'Obtener estado de un pago'
+      description: 'Este metodo permite obtener la informacion de un pago realizado en **Payku**'
+      operationId: getTransactionById
+      parameters:
+        - name: id
+          in: path
+          description: id de la transaccion a solicitar
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdentifierResponse'
+        '400':
+          description: Error en la solicitud.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400get'
+        '401':
+          description: Token Publico incorrecto.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error401'
+        '404':
+          description: Identificador no existe.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error404'
+      x-codeSamples:
+        - lang: 'cURL'
+          source: |
+            curl -X GET \
+            https://BASE-URL/api/transaction/ID-IDENTIFICADOR  \
+            -H 'Accept: application/json, text/plain, */*' \
+            -H 'Authorization: Bearer TOKEN-PUBLICO' \
+            -H 'Content-Type: application/json,application/json' \
+            -H 'Host: BASE-URL ' \
+
+  /api/verificar:
+    post:
+      tags:
+        - Transaccion
+      summary: 'URL CALLBACK'
+      description: |
+        Luego de realizado el pago por parte del usuario, payku notificara al comercio, el resultado de la operación (status), invocando al urlnotify suministrado previamente en la creación del cobro y a su vez entregara una serie de datos para las validaciones internas por parte de la aplicación del comercio, como son el order para que se identifique la transacción en su sistema, el transaccion_id la cual corresponde al identificador único en payku y un verificacion_key, que corresponde a un hash de validación único por transacción. 
+        Estos datos, permitirán desarrollar al comercio un llamado automático al método de validación en payku llamado ‘verificar’, el cual está diseñado para certificar el origen de la invocación al método y así descartar cualquier alteración de los datos o intento de fraude.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerificationResponse'
+        '400':
+          description: Error en la solicitud.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400'
+        '401':
+          description: Token Publico incorrecto.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error401'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                transaction_id:
+                  description: Identificador único de transacción por Payku.
+                  type: number
+                  example: 9123123
+                verification_key:
+                  description: Hash único de transacción .
+                  type: string
+                  example: 2ba83615f863e72sdca5dfd0a6df2782
+                order:
+                  description: Indentificador unico de transaccion enviado por el comercio.
+                  type: string
+                  example: 1568041684
+              required:
+              - transaction_id
+              - verification_key
+              - order
+
+  /api/event:
+    post:
+      tags:
+        - Evento
+      summary: Crear un evento
+      description: Este método permite crear un evento y recibir como respuesta el detalle del evento.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventCreateResponse'
+        '400':
+          description: Error en la solicitud.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400Event'
+        '401':
+          description: Token Publico incorrecto.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error401'
+      x-codeSamples:
+        - lang: 'CURL'
+          source: |
+            curl -X POST \
+              https://BASE_URL/api/event \
+              -H 'Accept: application/json, text/plain, */*' \
+              -H 'Authorization: Bearer TOKEN_PUBLICO  \   
+              -H 'Content-Type: application/json,application/json' \   
+              -H 'Host: BASE_URL' \   
+              -d {     
+                "name": "Event 1",     
+                "event": "157526894509521",     
+                "date_event": "2020-12-20",     
+                "date_payment": "2020-12-21",     
+                "date_closing_sales": "2020-12-19 23:00:00",     
+                "url_logo": "https://payku.cl/logo_event1.png",     
+                "url_event": "https://payku.cl/event1",     
+                "service_sale": "10",     
+                "affiliation": [
+                  ["afiliate1@gmail.com",  50], 
+                  ["afiliate2@gmail.com",  50]
+                ] 
+              }'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                event:
+                  description: Indicador del evento.
+                  type: string
+                  example: "98374"
+                name:
+                  description: Nombre del evento.
+                  type: string
+                  example: "Event"
+                date_event:
+                  description: Fecha en la cual se realizara el evento.
+                  type: datetime
+                  example: "2020-12-20"
+                date_closing_event:
+                  description: Fecha de cierre de las ventas, debe ser menor o igual a date_event.
+                  type: datetime
+                  example: "2020-12-19 23:59:00"
+                date_payment:
+                  description: Fecha de pago del evento, debe ser mayor a la fecha date_event.
+                  type: datetime
+                  example: "2020-12-20"
+                url_event:
+                  description: url en donde se encuentra publicado el evento.
+                  type: string
+                  format: url
+                  example: https://example.cl/event1
+                url_logo:
+                  description: url del logo que identifica al evento.
+                  type: string
+                  format: url
+                  example: https://example.cl/logo_event1.png
+                service_sale:
+                  description: Monto del servicio de ventas, pertenece al monto que recibirá el dueño de la cuenta por transacción.
+                  type: number
+                  example: 10
+                affiliaction:
+                  type: array
+                  description: Distribución de los beneficiarios.
+                  items:
+                    type: object
+                    description: Objeto de cobro para un lote de cobros.
+                    properties:
+                      email:
+                        type: string
+                        description: Email del beneficiario.
+                        example: "afiliate1@domain.com"
+                      percent:
+                        type: number
+                        description: Porcentaje la cual le corresponde al beneficiario.
+                        example: "afiliate1@domain.com"
+              required:
+              - event
+              - name
+              - date_event
+              - date_closing_event
+              - date_payment
+    
+  /api/event/{identificadorEvento}:
+    get:
+      tags:
+        - Evento
+      summary: Obtener detalles de un evento
+      description: Este método permite obtener el detalle de un evento.
+      operationId: getEventById
+      parameters:
+        - name: id
+          in: path
+          description: id del evento a solicitar
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventIdResponse'
+        '400':
+          description: Error en la solicitud.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400Event'
+        '401':
+          description: Token Publico incorrecto.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error401'
+      x-codeSamples:
+        - lang: 'CURL'
+          source: |
+            curl -X POST \
+              https://BASE_URL/api/event \
+              -H 'Accept: application/json, text/plain, */*' \
+              -H 'Authorization: Bearer TOKEN_PUBLICO  \   
+              -H 'Content-Type: application/json,application/json' \   
+              -H 'Host: BASE_URL' \   
+              -d {     
+                "name": "Event 1",     
+                "event": "157526894509521",     
+                "date_event": "2020-12-20",     
+                "date_payment": "2020-12-21",     
+                "date_closing_sales": "2020-12-19 23:00:00",     
+                "url_logo": "https://payku.cl/logo_event1.png",     
+                "url_event": "https://payku.cl/event1",     
+                "service_sale": "10",     
+                "affiliation": [
+                  ["afiliate1@gmail.com",  50], 
+                  ["afiliate2@gmail.com",  50]
+                ] 
+              }'
+
+  /api/maclient:
+    post:
+      tags:
+        - Marketplace
+      summary: Administrar clientes
+      description: Este metodo permite la insercion de datos de un cliente.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminClientMarketResponse'
+        '400':
+          description: Error en la solicitud.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400'
+        '401':
+          description: Token Publico incorrecto.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error401'
+      x-codeSamples:
+        - lang: 'PHP'
+          source: |
+            $client = new \GuzzleHttp\Client();         
+              $body = $client->request('POST', 'https://[base URL]/api/maclient', [
+                'json' => [                
+                  'email' => 'email2@domain.cl', 
+                  'name' => 'name', 
+                  'phone' => 'phone', 
+                  'address' => 'address', 
+                  'country' => [
+                    "sbif":"0001 ",
+                    "type": "1",
+                    "num": "1231123567",
+                    "rut": "111111111",
+                  ]
+                ],  
+                'headers' => [                 
+                  'Sign' => '0d04820b87c80f79a89235fcd256d9b6cddee2fc15fa50034c1903370f3de8c6',                 
+                  'Authorization' => 'Bearer 8c872egfdg996f8b418c872e996f8b418c872e996f8b41'              
+                ]           
+              ])->getBody();           
+            $response = json_decode($body); 
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  description: Email del cliente.
+                  type: string
+                  format: email
+                  example: example@domain.com
+                name:
+                  description: Nombre del cliente
+                  type: string
+                  example: "name"
+                phone:
+                  description: Telefono del cliente.
+                  type: string
+                  example: "phone"
+                bank:
+                  type: object
+                  properties:
+                    sbif:
+                      description: Codigo banco.
+                      type: string
+                      example: "pl4293e97a87195bb9edcd"
+                    type:
+                      description: Tipo de cuenta.(1= Corriente , 2= Vista/Cuenta RUT, 3= Ahorro)
+                      type: string
+                      example: "active"
+                    num:
+                      description: Número de cuenta del cliente.
+                      type: string
+                      example: "12312313121"
+                    rut: 
+                      description: Registro Único Tributario.
+                      type: string
+                      example: "111111111"
+                  required:
+                    - sbif
+                    - type
+                    - num
+                    - rut
+              required:
+                - email
+                - name
+                - phone
+                - bank
+
+  /api/maclient/{identificadorCliente}:
+    get:
+      tags:
+        - Marketplace
+      summary: Consulta datos de cliente
+      description: Este método permite obtener el detalles de un cliente.
+      operationId: getClientMarketById
+      parameters:
+        - name: id
+          in: path
+          description: Identificador único por payku.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminClientMarketResponse'
+        '400':
+          description: Error en la solicitud.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400Event'
+        '401':
+          description: Token Publico incorrecto.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error401'
+      x-codeSamples:
+        - lang: 'PHP'
+          source: |
+            $client = new \GuzzleHttp\Client();         
+              $body = $client->request('GET', 'https://[base URL]/api/maclient/madb93fc00a2cf6f4449', [                    
+                'headers' => [                 
+                  'Sign' => '0d04820b87c80f79a89235fcd256d9b6cddee2fc15fa50034c1903370f3de8c6',                 
+                  'Authorization' => 'Bearer 8c872egfdg996f8b418c872e996f8b418c872e996f8b41'              
+                ]           
+              ])->getBody();           
+            $response = json_decode($body);
+  
+    delete:
+      tags:
+        - Marketplace
+      summary: Eliminar cliente
+      description: Esto metodo permite la eliminacion de un cliente asociados a un id de usuario.
+      operationId: getClientDeleteById
+      parameters:
+        - name: id
+          in: path
+          description: Identificador único de cliente por payku.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteClientMarketResponse'
+        '400':
+          description: Error en la solicitud.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400'
+        '401':
+          description: Token Publico incorrecto.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error401'
+      x-codeSamples:
+        - lang: 'PHP'
+          source: |
+            $client = new \GuzzleHttp\Client();         
+              $body = $client->request('DELETE', 'https:// [base URL]/api/maclient/madb93fc00a2cf6f4449', [                 
+                  'headers' => [                 
+                    'Sign' => '0d04820b87c80f79a89235fcd256d9b6cddee2fc15fa50034c1903370f3de8c6',                 
+                    'Authorization' => 'Bearer 8c872egfdg996f8b418c872e996f8b418c872e996f8b41'              ]           
+                  ])->getBody();           
+                $response = json_decode($body); 
+
+  /api/maaffiliation:
+    post:
+      tags:
+        - Marketplace
+      summary: Administrar afiliaciones
+      description: Este metodo permite registra los datos para la afiliación.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminAffiliationResponse'
+        '400':
+          description: Error en la solicitud.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400'
+        '401':
+          description: Token Publico incorrecto.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error401'
+      x-codeSamples:
+        - lang: 'PHP'
+          source: |
+            $client = new \GuzzleHttp\Client();         
+              $body = $client->request('POST', 'https://[base URL]/api/maclient', [
+                'json' => [                
+                  'name' => 'name', 
+                  'percentage' => '20',  
+                  'affiliation' => [
+                    [ma9fd16221a9645b0036,40],
+                    ['mafeafb27743af9c5fd4',40],
+                  ]
+                ],  
+                'headers' => [                 
+                  'Sign' => '0d04820b87c80f79a89235fcd256d9b6cddee2fc15fa50034c1903370f3de8c6',                 
+                  'Authorization' => 'Bearer 8c872egfdg996f8b418c872e996f8b418c872e996f8b41'              
+                ]           
+              ])->getBody();           
+            $response = json_decode($body); 
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  description: Nombre de afiliación.
+                  type: string
+                  example: name
+                percentage:
+                  description: Porcentaje correspondiente al usuario payku.
+                  type: string
+                  example: "20"
+                affiliation:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        description: Identificador del cliente creado por payku.
+                        type: string
+                        example: "ma9fd16221a9645b0036"
+                      percentage:
+                        description: Porcentaje.
+                        type: string
+                        example: "80"
+                    required:
+                      - id
+                      - percentage
+              required:
+                - name
+                - percentage
+                - affiliation
+
+  /api/maaffiliation/{identificadorCliente}:
+    get:
+      tags:
+        - Marketplace
+      summary: Consulta datos de la afiliacion
+      description: Este método permite obtener el detalles de una afiliacion.
+      operationId: getAffiliationById
+      parameters:
+        - name: id
+          in: path
+          description: Identificador único de afiliación por payku.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminAffiliationResponse'
+        '400':
+          description: Error en la solicitud.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400Event'
+        '401':
+          description: Token Publico incorrecto.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error401'
+      x-codeSamples:
+        - lang: 'PHP'
+          source: |
+            $client = new \GuzzleHttp\Client();         
+              $body = $client->request('GET', 'https://[base URL]/api/maclient/madb93fc00a2cf6f4449', [                    
+                'headers' => [                 
+                  'Sign' => '0d04820b87c80f79a89235fcd256d9b6cddee2fc15fa50034c1903370f3de8c6',                 
+                  'Authorization' => 'Bearer 8c872egfdg996f8b418c872e996f8b418c872e996f8b41'              
+                ]           
+              ])->getBody();           
+            $response = json_decode($body);
+  
+    delete:
+      tags:
+        - Marketplace
+      summary: Eliminar afiliaccion
+      description: Esto metodo permite la eliminacion de una afiliacion asociados a un id.
+      operationId: getAffiliationDeleteById
+      parameters:
+        - name: id
+          in: path
+          description: Identificador único de cliente por payku.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteAffiliationResponse'
+        '400':
+          description: Error en la solicitud.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400'
+        '401':
+          description: Token Publico incorrecto.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error401'
+      x-codeSamples:
+        - lang: 'PHP'
+          source: |
+            $client = new \GuzzleHttp\Client();         
+              $body = $client->request('DELETE', 'https:// [base URL]/api/maclient/madb93fc00a2cf6f4449', [                 
+                  'headers' => [                 
+                    'Sign' => '0d04820b87c80f79a89235fcd256d9b6cddee2fc15fa50034c1903370f3de8c6',                 
+                    'Authorization' => 'Bearer 8c872egfdg996f8b418c872e996f8b418c872e996f8b41'              ]           
+                  ])->getBody();           
+                $response = json_decode($body); 
+
+components:
+  schemas:
+    AdminClientResponse:
+      description: "Datos de retorno de la insercion de un cliente"
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identificador de la transacción creado por payku. 
+          example: 'cl19715c30002ab3ba4dab'
+        name:
+          type: string
+          description: Nombre del cliente. 
+          example: 'name'
+        phone:
+          type: string
+          description: Teléfono del cliente. 
+          example: "phone"
+        email:
+          type: string
+          description: Email del cliente. 
+          example: "example@domain.com"
+        address:
+          description: Direccion del cliente.
+          type: string
+          example: "address"
+        country:
+          description: Pais del cliente.
+          type: string
+          example: "country"
+        region:
+          description: Region del cliente.
+          type: string
+          example: "region"
+        city: 
+          description: Ciudad del cliente.
+          type: string
+          example: "city"
+        postal_code:
+          description: Código postal del cliente.  
+          type: string
+          example: "postal_code"
+        status:
+          description: Estatus del cliente.  
+          type: string
+          example: "active"
+        create_at:
+          description: Fecha de registro.  
+          type: datetime
+          example: "2020-09-29"
+        update_at:
+          description: Fecha de modificación.  
+          type: datetime
+          example: null
+        subcriptions:
+          description: suscripciones del cliente.  
+          type: object
+          example: null
+
+    ClientIdResponse:
+      description: "Datos de retorno de la insercion de un cliente"
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identificador de la transacción creado por payku. 
+          example: 'cl19715c30002ab3ba4dab'
+        name:
+          type: string
+          description: Nombre del cliente. 
+          example: 'name'
+        phone:
+          type: string
+          description: Teléfono del cliente. 
+          example: "phone"
+        email:
+          type: string
+          description: Email del cliente. 
+          example: "example@domain.com"
+        address:
+          description: Direccion del cliente.
+          type: string
+          example: "address"
+        city: 
+          description: Ciudad del cliente.
+          type: string
+          example: "city"
+        region:
+          description: Region del cliente.
+          type: string
+          example: "region"
+        country:
+          description: Pais del cliente.
+          type: string
+          example: "country"
+        postal_code:
+          description: Código postal del cliente.  
+          type: string
+          example: "postal_code"
+        status:
+          description: Estatus del cliente.  
+          type: string
+          example: "active"
+        create_at:
+          description: Fecha de registro.  
+          type: datetime
+          example: "2020-09-29"
+        update_at:
+          description: Fecha de modificación.  
+          type: datetime
+          example: null
+        subcriptions:
+          type: object
+          properties:
+            plan:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    description: Identificador del plan creado por payku. 
+                    type: string
+                    example: "pl9697fb170834ad42dd00"
+                  name:
+                    description: Nombre del plan.
+                    type: string
+                    example: "test plan"
+                  currency:
+                    description: Moneda.  
+                    type: string
+                    example: "CPL"
+            cards:
+              type: array
+              items:
+                type: object
+                properties:
+                  last_4_digits:
+                    description: Últimos 4 dígitos de la tarjeta afiliada. 
+                    type: string
+                    example: "6622"
+                  card_type:
+                    description: Tipo de tarjeta.
+                    type: string  
+                    example: "Visa"
+            transactions:
+              type: array
+              items:
+                type: object
+                properties:
+                  created_at:
+                    description: Fecha de creación de la transacción. 
+                    type: string
+                    example: "2020-09-30 19:58:35"
+                  amount:
+                    description: Monto de transacción.
+                    type: string  
+                    example: "10000"
+                  transaction:
+                    description: Numero de transacción. 
+                    type: string
+                    example: "204444"
+                  authorization_code:
+                    description: Código de autorización.
+                    type: string
+                    example: "1234"
+                  order:
+                    description: Numero de orden. 
+                    type: string
+                    example: "001"
+                  description:
+                    description: Descripción.
+                    type: string 
+                    example: "descripcion"  
+                  status:
+                    description: Estatus de transacción.
+                    type: string 
+                    example: "success"
+
+    ModifyClientResponse:
+      description: "Datos de retorno de la modificacion de un cliente"
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identificador de la transacción creado por payku. 
+          example: 'cl19715c30002ab3ba4dab'
+        name:
+          type: string
+          description: Nombre del cliente. 
+          example: 'name2'
+        phone:
+          type: string
+          description: Teléfono del cliente. 
+          example: "phone2"
+        email:
+          type: string
+          description: Email del cliente. 
+          example: "example2@domain.com"
+        address:
+          description: Direccion del cliente.
+          type: string
+          example: "address2"
+        city: 
+          description: Ciudad del cliente.
+          type: string
+          example: "city2"
+        region:
+          description: Region del cliente.
+          type: string
+          example: "region2"
+        country:
+          description: Pais del cliente.
+          type: string
+          example: "country2"
+        postal_code:
+          description: Código postal del cliente.  
+          type: string
+          example: "postal_code2"
+        status:
+          description: Estatus del cliente.  
+          type: string
+          example: "Enable"
+        create_at:
+          description: Fecha de registro.  
+          type: datetime
+          example: "2020-09-29"
+        update_at:
+          description: Fecha de modificación.  
+          type: datetime
+          example: "2020-09-30"
+        subcriptions:
+          type: object
+          description: suscripciones del cliente.  
+          example: null
+
+    DeleteClientResponse:
+      description: "Datos de retorno de la eliminacion de un cliente"
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identificador de la transacción creado por payku. 
+          example: 'cl19715c30002ab3ba4dab'
+        status:
+          type: string
+          description: Estatus de cliente. 
+          example: 'DELETE'
+
+    DeleteClientMarketResponse:
+      description: "Datos de retorno de la eliminacion de un cliente"
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identificador creado por payku. 
+          example: 'madb93fc00a2cf6f4449'
+        status:
+          type: string
+          description: Estatus de cliente. 
+          example: 'suspended'
+
+    DeleteAffiliationResponse:
+      description: "Datos de retorno de la eliminacion de una afiliacion"
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identificador creado por payku. 
+          example: 'eecd92fdbb8bf615e821'
+        status:
+          type: string
+          description: Estatus de afiliación. 
+          example: 'suspended'
+        
+        
+    PlanResponse:
+      description: "Datos de retorno de la insercion de un plan"
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estatus. 
+          example: 'success'
+        id:
+          type: string
+          description: Identificador único de plan por payku. 
+          example: 'pl4293e97a87195bb9edcd'
+        
+
+    DeleteSuscriptionResponse:
+      description: "Datos de retorno de la eliminacion de un cliente"
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identificador de la transacción creado por payku. 
+          example: 'sucaab7865dceaff49d8b3'
+        status:
+          type: string
+          description: Estatus. 
+          example: 'success'
+    
+    CreateSuscriptionResponse:
+      description: "Datos de retorno de la insercion de datos de una suscripcion"
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estatus. 
+          example: 'success'
+        id:
+          type: string
+          description: Identificador único de suscripción por payku. 
+          example: 'sucaab7865dceaff49d8b3'
+        url:
+          type: string
+          description: Url pago y activación de suscripción. 
+          example: 'http://127.0.0.2/gateway/registrosuscripcion?tipoplan=2&plan=true&token=219&valida cion=e6c50ba0e0'
+
+    PlanIdResponse:
+      description: "Datos de retorno de consulta de plan por id"
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estatus. 
+          example: 'success'
+        plan:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                description: Identificador único de plan por payku. 
+                type: string
+                example: "pl4293e97a87195bb9edcd"
+              status:
+                description: Estatus del plan. 
+                type: string
+                example: "active"
+              name:
+                description: Nombre del plan.
+                type: string
+                example: "plan 1"
+              code:
+                description: Código del plan.
+                type: string
+                example: "001"
+              description:
+                description: Descripción del plan.
+                type: string
+                example: "Description plan 1"
+              url_notify_payment:
+                description:
+                type: string
+                example: ""
+              url_notify_suscription:
+                description:
+                type: string
+                example: ""
+              total_suscription:
+                description: Total de suscripciones.
+                type: string
+                example: "1"
+              total_suscription_active:
+                description: Total de suscripciones.
+                type: string
+                example: "1"
+
+    CreateSuTransactionResponse:
+      description: "Datos de retorno de la insercion de datos de una suscripcion"
+      type: object
+      properties:
+        status:
+          description: Estatus de transacción.
+          type: string
+          example: success
+        order:
+          description: Orden.
+          type: string
+          example: "001"
+        amount:
+          description: Monto.
+          type: string
+          example: "10000"
+        transaction:
+          description: Numero de transacción.
+          type: string
+          example: "204444"
+
+    CardSuscriptionResponse:
+      description: "Datos de retorno de la insercion de datos de una tarjeta"
+      type: object
+      properties:
+        status:
+          description: Estatus.
+          type: string
+          example: success
+        id:
+          description: Identificador único de suscripción por payku.
+          type: string
+          example: sucaab7865dceaff49d8b3
+        url:
+          description: URL pago y activación de suscripción.
+          type: string
+          example: http://127.0.0.2/gateway/registrosuscripcion?plan=true&token=246&validacion=d6b32 8e57c&tarjetaadicional=true
+
+    SuscriptionIdResponse:
+      description: "Datos de retorno de la consultada de una suscripcion"
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estatus de la suscripción. 
+          example: 'active'
+        id:
+          type: string
+          description: Identificador de la suscripción creado por payku. 
+          example: 'sucaab7865dceaff49d8b7'
+        client:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                description: Identificador del cliente creado por payku.
+                type: string
+                example: "su7e5e1c0b1bd2e37ec557"
+              name:
+                description: Nombre del cliente.
+                type: string
+                example: "name"
+              email:
+                description: Email del cliente.
+                type: string
+                example: "example@domain.com"
+        plan:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                description: Identificador del plan creado por payku.
+                type: string
+                example: "pl9697fb170834ad42dd00"
+              name:
+                description: Nombre del plan.
+                type: string
+                example: "test plan"
+              currency:
+                description: Moneda.
+                type: string
+                example: "CPL"
+        cards:
+          type: array
+          items:
+            type: object
+            properties:
+              last_4_digits:
+                description: Últimos 4 dígitos de la tarjeta afiliada. 
+                type: string
+                example: "6622"
+              card_type:
+                description: Tipo de tarjeta.
+                type: string  
+                example: "Visa"
+        transactions:
+          type: array
+          items:
+            type: object
+            properties:
+              created_at:
+                description: Fecha de creación de la transacción. 
+                type: string
+                example: "2020-09-30 19:58:35"
+              amount:
+                description: Monto de transacción.
+                type: string  
+                example: "10000"
+              transaction:
+                description: Numero de transacción. 
+                type: string
+                example: "204444"
+              authorization_code:
+                description: Código de autorización.
+                type: string
+                example: "1234"
+              order:
+                description: Numero de orden. 
+                type: string
+                example: "001"
+              description:
+                description: Descripción.
+                type: string 
+                example: "descripcion"  
+              status:
+                description: Estatus de transacción.
+                type: string 
+                example: "success"
+
+    TransactionResponse:
+      description: "Datos de retorno de la creacion de una transaccion"
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estatus de la transaccion. 
+          example: 'register'
+        id:
+          type: string
+          description: Identificador de la transacción creado por payku. 
+          example: 'clasd12319715c30002ab3ba4dab'
+        url:
+          type: string
+          description: URL ha redireccionar al usuario. 
+          example: "https://BASE-URL/url_de_pago"
+
+    IdentifierResponse:
+      description: "Datos de retorno de estado de una transaccion"
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estatus de la transaccion. 
+          example: "success"
+        id:
+          type: string
+          description: Identificador de la transacción creado por Payku. 
+          example: '10ac494c1d8da71d98ea'
+        created_at:
+          type: string
+          description: Fecha de registro. 
+          example: '2019-10-25 14:10:03'
+        order:
+          type: string
+          description: Numero de orden. 
+          example: '1572023402'
+        email:
+          type: string
+          description: Email del usuario. 
+          example: 'alex@onequark.com'
+        subject:
+          type: string
+          description: Descripción de la orden de compra. 
+          example: '1572023402'
+        amount:
+          type: string
+          description: Monto. 
+          example: '98745'
+        payment:
+          type: object
+          properties:
+            media:
+              type: string
+              description: Medio de pago, utilizado por el usuario. 
+              example: "Webpay"
+            authorization_code:
+              type: string
+              description: Código de autorización. 
+              example: "107742"
+            transaction_id:
+              type: string
+              description: Identificador de la transaccion creado por payku. 
+              example: "107999"
+            verification_key:
+              type: string
+              description: Código de verificación creado por Payku. 
+              example: "6669cbd982ef54c28f2f15fb9dc5262d"
+            last_4_digits:
+              type: string
+              description: Últimos 4 dígitos de la tarjeta afiliada. 
+              example: "1233"
+            card_type:
+              type: string
+              description: Tipo de tarjeta. 
+              example: ""
+            additional:
+              type: string 
+              example: ""
+            currency:
+              type: string
+              description: Moneda. 
+              example: "CLP"
+
+    VerificationResponse:
+      description: "Datos de retorno de la creacion de una transaccion"
+      type: object
+      properties:
+        order:
+          type: string
+          description: Identificador de la transacción creado por payku. . 
+          example: '9123123'
+        status:
+          type: string
+          description: Validación exitosa = Recibirá el string ‘VALID’.    
+                        Validación rechazada = Recibirá diferente a ‘INVALID’.
+          example: "VALID"
+    
+    EventCreateResponse:
+      description: "Datos de retorno de la creacion de un evento"
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estatus de la solicitud. 
+          example: 'success'
+        id:
+          type: string
+          description: Identificador del evento. 
+          example: '98374'
+        event:
+          type: string
+          description: Nombre del evento.
+          example: "Event"
+        date_event:
+          type: datetime
+          description: Fecha en la cual se realizara el evento.
+          example: "2020-12-20"
+        date_payment:
+          type: datetime
+          description: Fecha de pago del evento, debe ser mayor a la fecha date_event .
+          example: "2020-12-22"
+        date_closing_sales:
+          type: datetime
+          description: Fecha de cierre de las ventas, debe ser menor o igual a date_event.
+          example: "2020-12-19 23:59:00"
+        url_logo:
+          type: string
+          description: url que pertenece al evento .
+          format: url
+          example: "https://example.cl/logo_event1.png"
+        url_event:
+          type: string
+          description: url en donde se encuentra publicado el evento.
+          format: url
+          example: "https://payku.cl/event1"
+        distribution:
+          type: object
+          description: Distribución de las transacciones.
+          properties:
+            affiliate:
+              type: string
+              description: Monto a distribuir a los beneficiarios.
+              example: "100.00"
+            service_sale:
+              type: string
+              description: Monto a distribuir en el servicio de venta .
+              example: "10.00"
+        affiliaction:
+          type: object
+          description: Informacion de los afiliados.
+          properties:
+            id:
+              type: string
+              description: Identificador del beneficiario.
+              example: "b99dfd8193ebfd37d4b9"
+            email:
+              type: string
+              description: Correo del beneficiario.
+              example: "afiliate1@domain.com"
+            percent:
+              type: string
+              description: Porcentaje la cual le corresponde al beneficiario.
+              example: "100.00"
+            status:
+              type: string
+              description: Estatus del beneficiario.
+              example: "pending"
+        paymentData:
+          type: object
+          description: Distribución de los beneficiarios.
+          properties:
+            count:
+              type: number
+              description: Cantidad de ventas.
+              example: 0
+            amount_general:
+              type: number
+              description: Monto general de todas las transacciones.
+              example: 0
+            amount_affiliate:
+              type: number
+              description: Monto a distribuir a los beneficiarios.
+              example: 0
+            fee:
+              type: number
+              description: Comisión general.
+              example: 0
+            balance:
+              type: number
+              description: Monto a depositar.
+              example: 0
+
+    EventIdResponse:
+      description: "Datos de retorno de la creacion de un evento"
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identificador del evento. 
+          example: '98374'
+        event:
+          type: string
+          description: Nombre del evento.
+          example: "Event"
+        date_event:
+          type: datetime
+          description: Fecha en la cual se realizara el evento.
+          example: "2020-12-20"
+        date_payment:
+          type: datetime
+          description: Fecha de pago del evento, debe ser mayor a la fecha date_event .
+          example: "2020-12-22"
+        date_closing_sales:
+          type: datetime
+          description: Fecha de cierre de las ventas, debe ser menor o igual a date_event.
+          example: "2020-12-19 23:59:00"
+        url_logo:
+          type: string
+          description: url que pertenece al evento .
+          format: url
+          example: "https://example.cl/logo_event1.png"
+        url_event:
+          type: string
+          description: url en donde se encuentra publicado el evento.
+          format: url
+          example: "https://payku.cl/event1"
+        distribution:
+          type: object
+          description: Distribución de las transacciones.
+          properties:
+            affiliate:
+              type: string
+              description: Monto a distribuir a los beneficiarios.
+              example: "100.00"
+            service_sale:
+              type: string
+              description: Monto a distribuir en el servicio de venta .
+              example: "10.00"
+        affiliaction:
+          type: object
+          description: Informacion de los afiliados.
+          properties:
+            id:
+              type: string
+              description: Identificador del beneficiario.
+              example: "b99dfd8193ebfd37d4b9"
+            email:
+              type: string
+              description: Correo del beneficiario.
+              example: "afiliate1@domain.com"
+            percent:
+              type: string
+              description: Porcentaje la cual le corresponde al beneficiario.
+              example: "100.00"
+            status:
+              type: string
+              description: Estatus del beneficiario.
+              example: "pending"
+        paymentData:
+          type: object
+          description: Distribución de los beneficiarios.
+          properties:
+            count:
+              type: number
+              description: Cantidad de ventas.
+              example: 0
+            amount_general:
+              type: number
+              description: Monto general de todas las transacciones.
+              example: 0
+            amount_affiliate:
+              type: number
+              description: Monto a distribuir a los beneficiarios.
+              example: 0
+            fee:
+              type: number
+              description: Comisión general.
+              example: 0
+            balance:
+              type: number
+              description: Monto a depositar.
+              example: 0
+
+    AdminClientMarketResponse:
+      description: "Datos de retorno de la insercion de un cliente"
+      type: object
+      properties:
+        id:
+          description: Identificador creado por payku. 
+          type: string
+          example: "madb93fc00a2cf6f4449"
+        status:
+          description: Estatus del cliente.
+          type: string
+          example: "register"
+        name:
+          description: Nombre del cliente.
+          type: string
+          example: "name"
+        phone:
+          description: Telefono del cliente.
+          type: string
+          example: "phone"
+        email:
+          description: Email del cliente.
+          type: string
+          format: email
+          example: example@domain.com
+        bank:
+          type: object
+          properties:
+            sbif:
+              description: Codigo banco.
+              type: string
+              example: "pl4293e97a87195bb9edcd"
+            type:
+              description: Tipo de cuenta.(1= Corriente , 2= Vista/Cuenta RUT, 3= Ahorro)
+              type: string
+              example: "active"
+            num:
+              description: Número de cuenta del cliente.
+              type: string
+              example: "12312313121"
+            rut: 
+              description: Registro Único Tributario.
+              type: string
+              example: "111111111"
+        affiliations:
+          description: Cantidad de afiliaciones.
+          type: string
+          example: "0"
+        created_at:
+          description: Fecha de registro.
+          type: string
+          example: "2020-09-28 20:42:59"
+        update_at:
+          description: Fecha de modificación.
+          type: string
+          example: "null"
+
+    AdminAffiliationResponse:
+      description: "Datos de retorno de la insercion de un afiliado"
+      type: object
+      properties:
+        id:
+          description: Identificador único de suscripción por payku. 
+          type: string
+          example: "sucaab7865dceaff49d8b3"
+        status:
+          description: Estatus.
+          type: string
+          example: "register"
+        name:
+          description: Nombre de la afiliación.
+          type: string
+          example: "name"
+        token:
+          description: Token de afiliación que se ingresa en el comercio.
+          type: string
+          example: "eecd92fdbb8bf615e8215d6fbb30bb6ae6f82c9e1810f85b65bbeb472794c4a4"
+        percentage:
+          description: Porcentaje de afiliación usuario payku.
+          type: string
+          example: "20.00"
+        affiliations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                description: Identificar.
+                type: string
+                example: "ma9fd16221a9645b0036"
+              name:
+                description: Nombre del afiliado.
+                type: string
+                example: "name"
+              percentage:
+                description: Porcentaje correspondiente a cada afiliado.
+                type: string
+                example: "80.00"
+
+    Error:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estatus de la solicitud.
+          example: failed
+        type:
+          type: string
+          description: Tipo de error ocurrido.
+          example: Unprocessable Entity
+        message_error:
+          type: string
+          description: Mensaje de error
+          example: Array\n(\n    [order] => invalid\n)\n
+    
+    Error400:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estatus de la solicitud.
+          example: failed
+        type:
+          type: string
+          description: Tipo de error ocurrido.
+          example: Unprocessable Entity
+        message_error:
+          type: string
+          description: Mensaje de error
+          example: Array\n(\n    [order] => invalid\n)\n
+    
+    Error400Event:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estatus de la solicitud.
+          example: failed
+        type:
+          type: string
+          description: Tipo de error ocurrido.
+          example: Unprocessable Entity
+        message_error:
+          type: string
+          description: Mensaje de error
+          example: "Array\n(\n    [event] => is empty\n)\n"
+
+    Error400get:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estatus de la solicitud.
+          example: failed
+        type:
+          type: string
+          description: Tipo de error ocurrido.
+          example: Unprocessable Entity
+        message_error:
+          type: string
+          description: Mensaje de error
+          example: Array\n(\n    [id] => is Empty\n)\n
+    
+    Error401:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Tipo de error ocurrido.
+          example: Unauthorized
+        message_error:
+          type: object
+          properties:
+            error:
+              type: string
+              description: Mensaje de error
+              example: waiting token public
+    
+    Error404:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estatus de la solicitud.
+          example: failed
+        type:
+          type: string
+          description: Tipo de error ocurrido.
+          example: Not Found
+        id:
+          type: string
+          description: Informacion de id
+          example: is not valid
+          
+
+
+          
+    
