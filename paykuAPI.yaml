@@ -73,7 +73,7 @@ paths:
     post:
       tags:
         - Suscripcion
-      summary: Administrar clientes
+      summary: Insertar datos a un cliente
       description: Esto metodo permite la insercion de datos de un cliente.
       responses:
         '200':
@@ -99,14 +99,14 @@ paths:
             $client = new \GuzzleHttp\Client();         
               $body = $client->request('POST', 'https://[base URL]/api/suclient', [
                 'json' => [                
-                  'email' => 'email2@domain.cl', 
-                  'name' => 'name', 
-                  'phone' => 'phone', 
-                  'address' => 'address', 
-                  'country' => 'country', 
-                  'region' => 'region', 
-                  'city' => 'city', 
-                  'postal_code' => 'postal_code',
+                  'email' => 'joedoe@gmail.cl', 
+                  'name' => 'Joe Doe', 
+                  'phone' => '923122312', 
+                  'address' => 'Moneda 101', 
+                  'country' => 'Chile', 
+                  'region' => 'Metropolitana', 
+                  'city' => 'Santiago', 
+                  'postal_code' => '850000',
                   ],  
                 'headers' => [                 
                   'Sign' => '0d04820b87c80f79a89235fcd256d9b6cddee2fc15fa50034c1903370f3de8c6',                 
@@ -124,41 +124,41 @@ paths:
                   description: Email del cliente.
                   type: string
                   format: email
-                  example: example@domain.com
+                  example: joedoe@gmail.com
                 name:
                   description: Nombre del cliente
                   type: string
-                  example: "name"
+                  example: "Joe Doe"
                 phone:
                   description: Telefono del cliente.
                   type: string
-                  example: "phone"
+                  example: "923122312"
                 address:
                   description: Direccion del cliente.
                   type: string
-                  example: "address"
+                  example: "Moneda 101"
                 country:
                   description: Pais del cliente.
                   type: string
-                  example: "country"
+                  example: "Chile"
                 region:
                   description: Region del cliente.
                   type: string
-                  example: "region"
+                  example: "Metropolitana"
                 city: 
                   description: Ciudad del cliente.
                   type: string
-                  example: "city"
+                  example: "Santiago"
                 postal_code:
                   description: Código postal del cliente.  
                   type: string
-                  example: "postal_code"
+                  example: "850000"
               required:
                 - email
                 - name
                 - phone
 
-  /api/suclient/{identificadorTransaccion}:
+  /api/suclient/{identificadorCliente}:
     get:
       tags:
         - Suscripcion
@@ -194,10 +194,7 @@ paths:
         - lang: 'PHP'
           source: |
             $client = new \GuzzleHttp\Client();         
-              $body = $client->request('GET', 'https://[base URL]/api/suclient/', [             
-                'json' => [       
-                  'id' => cla90927fa9b30e1dfffa0,             
-                ],             
+              $body = $client->request('GET', 'https://[base URL]/api/suclient/cla90927fa9b30e1dfffa0', [                    
                 'headers' => [                 
                   'Sign' => '0d04820b87c80f79a89235fcd256d9b6cddee2fc15fa50034c1903370f3de8c6',                 
                   'Authorization' => 'Bearer 8c872egfdg996f8b418c872e996f8b418c872e996f8b41'              
@@ -205,12 +202,19 @@ paths:
               ])->getBody();           
             $response = json_decode($body);
 
-  /api/suclient/{identificadorCliente}:
     put:
       tags:
         - Suscripcion
       summary: Actualizar datos del cliente
       description: Esto metodo permite la actualizacion de los datos de un cliente.
+      operationId: putSuscriptionById
+      parameters:
+        - name: id
+          in: path
+          description: Identificador único de transacción por payku.
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           content:
@@ -233,9 +237,8 @@ paths:
         - lang: 'PHP'
           source: |
             $client = new \GuzzleHttp\Client();         
-              $body = $client->request('POST', 'https://[base URL]//api/suclient/', [             
-                'json' => [       
-                  'id' => cla90927fa9b30e1dfffa0,    
+              $body = $client->request('PUT', 'https://[base URL]//api/suclient/cla90927fa9b30e1dfffa0', [             
+                'json' => [          
                   'email' => example2@domain.com, 
                   'name' => 'name2', 
                   'phone' => 'phone2', 
@@ -258,98 +261,52 @@ paths:
             schema:
               type: object
               properties:
-                id:
-                  description: Identificador único de transacción por payku.
+                email:
+                  description: Nombre del cliente
                   type: string
-                  example: "cla90927fa9b30e1dfffa0"
+                  example: "joedoe@gmail.com"
                 name:
                   description: Nombre del cliente
                   type: string
-                  example: "name2"
+                  example: "Joe Doe Doe"
                 phone:
                   description: Telefono del cliente.
                   type: string
-                  example: "phone2"
+                  example: "923122312"
                 address:
                   description: Direccion del cliente.
                   type: string
-                  example: "address2"
+                  example: "Moneda 121"
                 country:
                   description: Pais del cliente.
                   type: string
-                  example: "country2"
+                  example: "Chile"
                 region:
                   description: Region del cliente.
                   type: string
-                  example: "region2"
+                  example: "Metropolitana"
                 city: 
                   description: Ciudad del cliente.
                   type: string
-                  example: "city2"
+                  example: "Santiago"
                 postal_code:
                   description: Código postal del cliente.  
                   type: string
-                  example: "postal_code2"
-              required:
-                - id
+                  example: "750000"
 
-  /api/suclient/customers:
-    post:
-      tags:
-        - Suscripcion
-      summary: Obtener todos los clientes
-      description: Esto metodo permite la obtener todos los clientes asociados a un id de usuario.
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ModifyClientResponse'
-        '400':
-          description: Error en la solicitud.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error400'
-        '401':
-          description: Token Publico incorrecto.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error401'
-      x-codeSamples:
-        - lang: 'PHP'
-          source: |
-            $client = new \GuzzleHttp\Client();         
-              $body = $client->request('POST', 'https://[base URL]/api/suclient/customers', [             
-                'json' => [       
-                  'id' => 8c872e996f8b418c872e996f8b8c872e996f8b41,             
-                ],             
-                'headers' => [                 
-                  'Sign' => '0d04820b87c80f79a89235fcd256d9b6cddee2fc15fa50034c1903370f3de8c6',                 
-                  'Authorization' => 'Bearer 8c872egfdg996f8b418c872e996f8b418c872e996f8b41'              
-                ]           
-              ])->getBody();           
-            $response = json_decode($body); 
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  description: Identificador único de usuario por payku.
-                  type: string
-                  example: 8c872e996f8b418c872e996f8b8c872e996f8b41
-              required:
-                - id
-
-  /api/suclient/delete/{identificadorCliente}:
     delete:
       tags:
         - Suscripcion
       summary: Eliminar cliente
       description: Esto metodo permite la eliminacion de un cliente asociados a un id de usuario.
+      operationId: deleteClientById
+      parameters:
+        - name: id
+          in: path
+          description: Identificador único de transacción por payku.
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           content:
@@ -372,29 +329,52 @@ paths:
         - lang: 'PHP'
           source: |
             $client = new \GuzzleHttp\Client();         
-              $body = $client->request('POST', 'https:// [base URL]/api/suclient/delete', [             
-                'json' => [       
-                  'id' => cla90927fa9b30e1dfffa0,             
-                  ],             
+              $body = $client->request('DELETE', 'https:// [base URL]/api/suclient/cla90927fa9b30e1dfffa0', [             
                   'headers' => [                 
                     'Sign' => '0d04820b87c80f79a89235fcd256d9b6cddee2fc15fa50034c1903370f3de8c6',                 
                     'Authorization' => 'Bearer 8c872egfdg996f8b418c872e996f8b418c872e996f8b41'              ]           
                   ])->getBody();           
                 $response = json_decode($body); 
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  description: Identificador único de usuario por payku.
-                  type: string
-                  example: 8c872e996f8b418c872e996f8b8c872e996f8b41
-              required:
-                - id
 
-  /api/suclient/sususcription:
+  /api/suclient/customers:
+    get:
+      tags:
+        - Suscripcion
+      summary: Obtener todos los clientes
+      description: Esto metodo permite la obtener todos los clientes asociados a un id de usuario.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ModifyClientResponse'
+        '400':
+          description: Error en la solicitud.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error400'
+        '401':
+          description: Token Publico incorrecto.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error401'
+      x-codeSamples:
+        - lang: 'PHP'
+          source: |
+            $client = new \GuzzleHttp\Client();         
+              $body = $client->request('GET', 'https://[base URL]/api/suclient/customers', [                      
+                'headers' => [                 
+                  'Sign' => '0d04820b87c80f79a89235fcd256d9b6cddee2fc15fa50034c1903370f3de8c6',                 
+                  'Authorization' => 'Bearer 8c872egfdg996f8b418c872e996f8b418c872e996f8b41'              
+                ]           
+              ])->getBody();           
+            $response = json_decode($body);
+
+  /api/sususcription:
     post:
       tags:
         - Suscripcion
@@ -424,7 +404,7 @@ paths:
             $client = new \GuzzleHttp\Client();         
               $body = $client->request('POST', 'https://[base URL]/api/ sususcription, [             
                 'json' => [                
-                  ' plan' => 'pl9697fb170834ad42dd00', 
+                  'plan' => 'pl9697fb170834ad42dd00', 
                   'client' => ' cl9b1e1dd988694f30fa30',
                   ], 
                   'headers' => [                 
@@ -440,18 +420,18 @@ paths:
               type: object
               properties:
                 plan:
-                  description: ID del plan.
+                  description: Id del plan.
                   type: string
                   example: pl9697fb170834ad42dd00
                 client:
-                  description: ID del cliente.
+                  description: Id del cliente.
                   type: string
                   example: cl9b1e1dd988694f30fa30
               required:
                 - plan
                 - client
 
-  /api/suclient/sutransaction:
+  /api/sutransaction:
     post:
       tags:
         - Suscripcion
@@ -517,7 +497,7 @@ paths:
               required:
                 - suscription
 
-  /api/sususcription/{identificadorTransaccion}:
+  /api/sususcription/{identificadorSuscripcion}:
     get:
       tags:
         - Suscripcion
@@ -553,10 +533,7 @@ paths:
         - lang: 'PHP'
           source: |
             $client = new \GuzzleHttp\Client();         
-              $body = $client->request('GET', 'https://[base URL]/api/sususcription/', [             
-                'json' => [       
-                  'id' => 'sucaab7865dceaff49d8b',             
-                ],             
+              $body = $client->request('GET', 'https://[base URL]/api/sususcription/sucaab7865dceaff49d8b', [                          
                 'headers' => [                 
                   'Sign' => '0d04820b87c80f79a89235fcd256d9b6cddee2fc15fa50034c1903370f3de8c6',                 
                   'Authorization' => 'Bearer 8c872egfdg996f8b418c872e996f8b418c872e996f8b41'              
@@ -564,12 +541,20 @@ paths:
               ])->getBody();           
             $response = json_decode($body);
 
-  /api/suclient/delete/{identificadorSuscripcion}:
+  /api/suclient/{identificadorSuscripcion}:
     delete:
       tags:
         - Suscripcion
       summary: Eliminar suscripcion
       description: Esto metodo permite la eliminacion de una suscripcion asociada a un id de suscripcion.
+      operationId: deleteSuscriptionById
+      parameters:
+        - name: id
+          in: path
+          description: Identificador único de transacción por payku.
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           content:
@@ -592,27 +577,12 @@ paths:
         - lang: 'PHP'
           source: |
             $client = new \GuzzleHttp\Client();         
-              $body = $client->request('POST', 'https:// [base URL]/api/sususcription/delete', [             
-                'json' => [       
-                  'id' => sucaab7865dceaff49d8b3,             
-                  ],             
+              $body = $client->request('DELETE', 'https:// [base URL]/api/sususcription/sucaab7865dceaff49d8b3, [                          
                   'headers' => [                 
                     'Sign' => '0d04820b87c80f79a89235fcd256d9b6cddee2fc15fa50034c1903370f3de8c6',                 
                     'Authorization' => 'Bearer 8c872egfdg996f8b418c872e996f8b418c872e996f8b41'              ]           
                   ])->getBody();           
                 $response = json_decode($body); 
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  description: Identificador único de suscripción por payku.
-                  type: string
-                  example: sucaab7865dceaff49d8b3
-              required:
-                - id
 
   /api/suinscriptionscards:
     post:
@@ -694,8 +664,8 @@ paths:
             $client = new \GuzzleHttp\Client();         
               $body = $client->request('POST', 'https:// [base URL]/api/suplan', [             
                 'json' => [       
-                  'id' => sucaab7865dceaff49d8b3,    
-                  'description' => 'descripción de plan 1'         
+                  'name' => 'Test plan',    
+                  'description' => 'Test Plan'         
                   ],             
                   'headers' => [                 
                     'Sign' => '0d04820b87c80f79a89235fcd256d9b6cddee2fc15fa50034c1903370f3de8c6',                 
@@ -711,11 +681,11 @@ paths:
                 name:
                   description: Nombre del plan.
                   type: string
-                  example: plan 
+                  example: Test plan 
                 description:
                   description: Descripción del plan.
                   type: string
-                  example: description plan 1
+                  example: Test Plan
               required:
                 - name
 
@@ -755,10 +725,7 @@ paths:
         - lang: 'PHP'
           source: |
             $client = new \GuzzleHttp\Client();         
-              $body = $client->request('GET', 'https://[base URL]/api/suplan/', [             
-                'json' => [       
-                  'id' => 'pl4293e97a87195bb9edcd',             
-                ],             
+              $body = $client->request('GET', 'https://[base URL]/api/suplan/pl29f6ad69fbd594148c39', [                    
                 'headers' => [                 
                   'Sign' => '0d04820b87c80f79a89235fcd256d9b6cddee2fc15fa50034c1903370f3de8c6',                 
                   'Authorization' => 'Bearer 8c872egfdg996f8b418c872e996f8b418c872e996f8b41'              
@@ -777,7 +744,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PlanIdResponse'
+                $ref: '#/components/schemas/PlanAllResponse'
         '400':
           description: Error en la solicitud.
           content:
@@ -852,10 +819,10 @@ paths:
                   description: Email del usuario.
                   type: string
                   format: email
-                  example: example@domain.com
+                  example: joedoe@domain.com
                 order:
                   description: Orden del comercio
-                  type: string
+                  type: integer
                   example: 98745
                 subject:
                   description: Descripcion de la orden
@@ -863,7 +830,7 @@ paths:
                   example: test subject
                 amount:
                   description: Monto de la orden
-                  type: number
+                  type: integer
                   example: 25000
                 payment:
                   description: |
@@ -876,7 +843,7 @@ paths:
                     - 6 Pago46
                     - 7 Sweetpay
                     - 99 Todos
-                  type: number
+                  type: integer
                   example: 1
                 urlreturn:
                   description: url de retorno del comercio donde payku redirigirá al pagador.
@@ -888,17 +855,13 @@ paths:
                   type: string
                   format: url
                   example: https://you_web_site/urlnotify
-                marketplace:
-                  description: Identificador del marketplace creado por payku. 
-                  type: string
-                  example: ew43r3r4dfsdf43r3t36f8b8c872e996f8b49
               required:
                 - email
                 - order
                 - subject
                 - amount
 
-  /api/transaction/ID-IDENTIFICADOR:
+  /api/transaction/{identificadorTrasaccion}:
     get:
       tags:
         - Transaccion
@@ -1190,15 +1153,14 @@ paths:
             $client = new \GuzzleHttp\Client();         
               $body = $client->request('POST', 'https://[base URL]/api/maclient', [
                 'json' => [                
-                  'email' => 'email2@domain.cl', 
-                  'name' => 'name', 
-                  'phone' => 'phone', 
-                  'address' => 'address', 
-                  'country' => [
-                    "sbif":"0001 ",
-                    "type": "1",
-                    "num": "1231123567",
-                    "rut": "111111111",
+                  'email' => 'joedoe@gmail.com', 
+                  'name' => 'Joe Doe', 
+                  'phone' => '923122312', 
+                  'bank' => [
+                    "sbif" => "0001 ",
+                    "type" => "1",
+                    "num" => "1231123567",
+                    "rut" => "111111111",
                   ]
                 ],  
                 'headers' => [                 
@@ -1217,26 +1179,26 @@ paths:
                   description: Email del cliente.
                   type: string
                   format: email
-                  example: example@domain.com
+                  example: joedoe@gmail.com
                 name:
                   description: Nombre del cliente
                   type: string
-                  example: "name"
+                  example: "Joe Doe"
                 phone:
                   description: Telefono del cliente.
                   type: string
-                  example: "phone"
+                  example: "923122312"
                 bank:
                   type: object
                   properties:
                     sbif:
                       description: Codigo banco.
                       type: string
-                      example: "pl4293e97a87195bb9edcd"
+                      example: "1234"
                     type:
                       description: Tipo de cuenta.(1= Corriente , 2= Vista/Cuenta RUT, 3= Ahorro)
                       type: string
-                      example: "active"
+                      example: "1"
                     num:
                       description: Número de cuenta del cliente.
                       type: string
@@ -1375,8 +1337,7 @@ paths:
                   'name' => 'name', 
                   'percentage' => '20',  
                   'affiliation' => [
-                    [ma9fd16221a9645b0036,40],
-                    ['mafeafb27743af9c5fd4',40],
+                    [ma9fd16221a9645b0036,80]
                   ]
                 ],  
                 'headers' => [                 
@@ -1512,54 +1473,56 @@ components:
       description: "Datos de retorno de la insercion de un cliente"
       type: object
       properties:
-        id:
-          type: string
-          description: Identificador de la transacción creado por payku. 
-          example: 'cl19715c30002ab3ba4dab'
-        name:
-          type: string
-          description: Nombre del cliente. 
-          example: 'name'
-        phone:
-          type: string
-          description: Teléfono del cliente. 
-          example: "phone"
-        email:
-          type: string
-          description: Email del cliente. 
-          example: "example@domain.com"
-        address:
-          description: Direccion del cliente.
-          type: string
-          example: "address"
-        country:
-          description: Pais del cliente.
-          type: string
-          example: "country"
-        region:
-          description: Region del cliente.
-          type: string
-          example: "region"
-        city: 
-          description: Ciudad del cliente.
-          type: string
-          example: "city"
-        postal_code:
-          description: Código postal del cliente.  
-          type: string
-          example: "postal_code"
         status:
           description: Estatus del cliente.  
           type: string
           example: "active"
+        id:
+          type: string
+          description: Identificador de la transacción creado por payku. 
+          example: 'cl0be4c8e623c167bc8b29'
+        name:
+          type: string
+          description: Nombre del cliente. 
+          example: 'Joe Doe'
+        phone:
+          type: string
+          description: Teléfono del cliente. 
+          example: "923122312"
+        email:
+          type: string
+          description: Email del cliente. 
+          example: "joedoe@gmail.com"
+        address:
+          description: Direccion del cliente.
+          type: string
+          example: "Moneda 101"
+        country:
+          description: Pais del cliente.
+          type: string
+          example: "Chile"
+        region:
+          description: Region del cliente.
+          type: string
+          example: "Metropolitana"
+        city: 
+          description: Ciudad del cliente.
+          type: string
+          example: "Santiago"
+        postal_code:
+          description: Código postal del cliente.  
+          type: string
+          example: "850000"
         create_at:
           description: Fecha de registro.  
-          type: datetime
+          type: string
           example: "2020-09-29"
+          format: datetime
         update_at:
           description: Fecha de modificación.  
-          type: datetime
+          type: string
           example: null
+          format: datetime
         subcriptions:
           description: suscripciones del cliente.  
           type: object
@@ -1569,54 +1532,56 @@ components:
       description: "Datos de retorno de la insercion de un cliente"
       type: object
       properties:
-        id:
-          type: string
-          description: Identificador de la transacción creado por payku. 
-          example: 'cl19715c30002ab3ba4dab'
-        name:
-          type: string
-          description: Nombre del cliente. 
-          example: 'name'
-        phone:
-          type: string
-          description: Teléfono del cliente. 
-          example: "phone"
-        email:
-          type: string
-          description: Email del cliente. 
-          example: "example@domain.com"
-        address:
-          description: Direccion del cliente.
-          type: string
-          example: "address"
-        city: 
-          description: Ciudad del cliente.
-          type: string
-          example: "city"
-        region:
-          description: Region del cliente.
-          type: string
-          example: "region"
-        country:
-          description: Pais del cliente.
-          type: string
-          example: "country"
-        postal_code:
-          description: Código postal del cliente.  
-          type: string
-          example: "postal_code"
         status:
           description: Estatus del cliente.  
           type: string
           example: "active"
+        id:
+          type: string
+          description: Identificador de la transacción creado por payku. 
+          example: 'cl0be4c8e623c167bc8b29'
+        name:
+          type: string
+          description: Nombre del cliente. 
+          example: 'Joe Doe'
+        phone:
+          type: string
+          description: Teléfono del cliente. 
+          example: "923122312"
+        email:
+          type: string
+          description: Email del cliente. 
+          example: "joedoe@gmail.com"
+        address:
+          description: Direccion del cliente.
+          type: string
+          example: "Moneda 101"
+        city: 
+          description: Ciudad del cliente.
+          type: string
+          example: "Santiago"
+        region:
+          description: Region del cliente.
+          type: string
+          example: "Metropolitana"
+        country:
+          description: Pais del cliente.
+          type: string
+          example: "Chile"
+        postal_code:
+          description: Código postal del cliente.  
+          type: string
+          example: "850000"
         create_at:
           description: Fecha de registro.  
-          type: datetime
+          type: string
           example: "2020-09-29"
+          format: datetime
         update_at:
           description: Fecha de modificación.  
-          type: datetime
+          type: string
           example: null
+          format: datetime
         subcriptions:
           type: object
           properties:
@@ -1688,54 +1653,56 @@ components:
       description: "Datos de retorno de la modificacion de un cliente"
       type: object
       properties:
-        id:
-          type: string
-          description: Identificador de la transacción creado por payku. 
-          example: 'cl19715c30002ab3ba4dab'
-        name:
-          type: string
-          description: Nombre del cliente. 
-          example: 'name2'
-        phone:
-          type: string
-          description: Teléfono del cliente. 
-          example: "phone2"
-        email:
-          type: string
-          description: Email del cliente. 
-          example: "example2@domain.com"
-        address:
-          description: Direccion del cliente.
-          type: string
-          example: "address2"
-        city: 
-          description: Ciudad del cliente.
-          type: string
-          example: "city2"
-        region:
-          description: Region del cliente.
-          type: string
-          example: "region2"
-        country:
-          description: Pais del cliente.
-          type: string
-          example: "country2"
-        postal_code:
-          description: Código postal del cliente.  
-          type: string
-          example: "postal_code2"
         status:
           description: Estatus del cliente.  
           type: string
-          example: "Enable"
+          example: "active"
+        id:
+          type: string
+          description: Identificador de la transacción creado por payku. 
+          example: 'cl0be4c8e623c167bc8b29'
+        name:
+          type: string
+          description: Nombre del cliente. 
+          example: 'Joe Doe Doe'
+        phone:
+          type: string
+          description: Teléfono del cliente. 
+          example: "923122312"
+        email:
+          type: string
+          description: Email del cliente. 
+          example: "joedoe@gmail.com"
+        address:
+          description: Direccion del cliente.
+          type: string
+          example: "Moneda 121"
+        city: 
+          description: Ciudad del cliente.
+          type: string
+          example: "Santiago"
+        region:
+          description: Region del cliente.
+          type: string
+          example: "Metropolitana"
+        country:
+          description: Pais del cliente.
+          type: string
+          example: "Chile"
+        postal_code:
+          description: Código postal del cliente.  
+          type: string
+          example: "750000"
         create_at:
           description: Fecha de registro.  
-          type: datetime
+          type: string
           example: "2020-09-29"
+          format: datetime
         update_at:
           description: Fecha de modificación.  
-          type: datetime
-          example: "2020-09-30"
+          type: string
+          example: "2020-10-2 08:32:52"
+          format: datetime
         subcriptions:
           type: object
           description: suscripciones del cliente.  
@@ -1745,40 +1712,40 @@ components:
       description: "Datos de retorno de la eliminacion de un cliente"
       type: object
       properties:
-        id:
-          type: string
-          description: Identificador de la transacción creado por payku. 
-          example: 'cl19715c30002ab3ba4dab'
         status:
           type: string
           description: Estatus de cliente. 
-          example: 'DELETE'
+          example: 'success'
+        id:
+          type: string
+          description: Identificador de la transacción creado por payku. 
+          example: 'cl0be4c8e623c167bc8b29'
 
     DeleteClientMarketResponse:
       description: "Datos de retorno de la eliminacion de un cliente"
       type: object
       properties:
-        id:
-          type: string
-          description: Identificador creado por payku. 
-          example: 'madb93fc00a2cf6f4449'
         status:
           type: string
           description: Estatus de cliente. 
           example: 'suspended'
-
+        id:
+          type: string
+          description: Identificador creado por payku. 
+          example: 'madb93fc00a2cf6f4449'
+        
     DeleteAffiliationResponse:
       description: "Datos de retorno de la eliminacion de una afiliacion"
       type: object
       properties:
-        id:
-          type: string
-          description: Identificador creado por payku. 
-          example: 'eecd92fdbb8bf615e821'
         status:
           type: string
           description: Estatus de afiliación. 
           example: 'suspended'
+        id:
+          type: string
+          description: Identificador creado por payku. 
+          example: 'eecd92fdbb8bf615e821'
         
         
     PlanResponse:
@@ -1815,7 +1782,7 @@ components:
         status:
           type: string
           description: Estatus. 
-          example: 'success'
+          example: 'register'
         id:
           type: string
           description: Identificador único de suscripción por payku. 
@@ -1823,7 +1790,7 @@ components:
         url:
           type: string
           description: Url pago y activación de suscripción. 
-          example: 'http://127.0.0.2/gateway/registrosuscripcion?tipoplan=2&plan=true&token=219&valida cion=e6c50ba0e0'
+          example: 'http://app.payku.cl/gateway/registrosuscripcion?tipoplan=2&plan=true&token=219&valida cion=e6c50ba0e0'
 
     PlanIdResponse:
       description: "Datos de retorno de consulta de plan por id"
@@ -1833,7 +1800,57 @@ components:
           type: string
           description: Estatus. 
           example: 'success'
-        plan:
+        plans:
+          type: object
+          properties:
+            id:
+              description: Identificador único de plan por payku. 
+              type: string
+              example: "pl4293e97a87195bb9edcd"
+            status:
+              description: Estatus del plan. 
+              type: string
+              example: "active"
+            name:
+              description: Nombre del plan.
+              type: string
+              example: "Test plan"
+            code:
+              description: Código del plan.
+              type: string
+              example: "001"
+            description:
+              description: Descripción del plan.
+              type: string
+              example: "Test Plan"
+            url_notify_payment:
+              description:
+              type: string
+              example: ""
+              format: url
+            url_notify_suscription:
+              description:
+              type: string
+              example: ""
+              format: url
+            total_suscription:
+              description: Total de suscripciones.
+              type: integer
+              example: 0
+            total_suscription_active:
+              description: Total de suscripciones.
+              type: integer
+              example: 0
+
+    PlanAllResponse:
+      description: "Datos de retorno de consulta de plan por id"
+      type: object
+      properties:
+        status:
+          type: string
+          description: Estatus. 
+          example: 'success'
+        plans:
           type: array
           items:
             type: object
@@ -1849,7 +1866,7 @@ components:
               name:
                 description: Nombre del plan.
                 type: string
-                example: "plan 1"
+                example: "Test plan"
               code:
                 description: Código del plan.
                 type: string
@@ -1857,23 +1874,25 @@ components:
               description:
                 description: Descripción del plan.
                 type: string
-                example: "Description plan 1"
+                example: "Test Plan"
               url_notify_payment:
                 description:
                 type: string
                 example: ""
+                format: url
               url_notify_suscription:
                 description:
                 type: string
                 example: ""
+                format: url
               total_suscription:
                 description: Total de suscripciones.
-                type: string
-                example: "1"
+                type: integer
+                example: 0
               total_suscription_active:
                 description: Total de suscripciones.
-                type: string
-                example: "1"
+                type: integer
+                example: 0
 
     CreateSuTransactionResponse:
       description: "Datos de retorno de la insercion de datos de una suscripcion"
@@ -1920,91 +1939,65 @@ components:
         status:
           type: string
           description: Estatus de la suscripción. 
-          example: 'active'
+          example: 'register'
         id:
           type: string
           description: Identificador de la suscripción creado por payku. 
           example: 'sucaab7865dceaff49d8b7'
         client:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                description: Identificador del cliente creado por payku.
-                type: string
-                example: "su7e5e1c0b1bd2e37ec557"
-              name:
-                description: Nombre del cliente.
-                type: string
-                example: "name"
-              email:
-                description: Email del cliente.
-                type: string
-                example: "example@domain.com"
+          type: object
+          properties:
+            id:
+              description: Identificador del cliente creado por payku.
+              type: string
+              example: "su7e5e1c0b1bd2e37ec557"
+            name:
+              description: Nombre del cliente.
+              type: string
+              example: "name"
+            email:
+              description: Email del cliente.
+              type: string
+              example: "example@domain.com"
+            rut:
+              description: Rol Unico Tributario.
+              type: string
+              example: "1.111.111-1"
+            phone:
+              description: Telefono del cliente.
+              type: string
+              example: "example@domain.com"
+            parametros:
+              description:
+              type: array
         plan:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                description: Identificador del plan creado por payku.
-                type: string
-                example: "pl9697fb170834ad42dd00"
-              name:
-                description: Nombre del plan.
-                type: string
-                example: "test plan"
-              currency:
-                description: Moneda.
-                type: string
-                example: "CPL"
+          type: object
+          properties:
+            id:
+              description: Identificador del plan creado por payku.
+              type: string
+              example: "pl9697fb170834ad42dd00"
+            name:
+              description: Nombre del plan.
+              type: string
+              example: "test plan"
+            currency:
+              description: Moneda.
+              type: string
+              example: "CPL"
         cards:
-          type: array
-          items:
-            type: object
-            properties:
-              last_4_digits:
-                description: Últimos 4 dígitos de la tarjeta afiliada. 
-                type: string
-                example: "6622"
-              card_type:
-                description: Tipo de tarjeta.
-                type: string  
-                example: "Visa"
+          type: object
+          properties:
+            last_4_digits:
+              description: Últimos 4 dígitos de la tarjeta afiliada. 
+              type: string
+              example: "6622"
+            card_type:
+              description: Tipo de tarjeta.
+              type: string  
+              example: "Visa"
         transactions:
           type: array
-          items:
-            type: object
-            properties:
-              created_at:
-                description: Fecha de creación de la transacción. 
-                type: string
-                example: "2020-09-30 19:58:35"
-              amount:
-                description: Monto de transacción.
-                type: string  
-                example: "10000"
-              transaction:
-                description: Numero de transacción. 
-                type: string
-                example: "204444"
-              authorization_code:
-                description: Código de autorización.
-                type: string
-                example: "1234"
-              order:
-                description: Numero de orden. 
-                type: string
-                example: "001"
-              description:
-                description: Descripción.
-                type: string 
-                example: "descripcion"  
-              status:
-                description: Estatus de transacción.
-                type: string 
-                example: "success"
 
     TransactionResponse:
       description: "Datos de retorno de la creacion de una transaccion"
@@ -2305,27 +2298,27 @@ components:
         name:
           description: Nombre del cliente.
           type: string
-          example: "name"
+          example: "Joe Doe"
         phone:
           description: Telefono del cliente.
           type: string
-          example: "phone"
+          example: "923122312"
         email:
           description: Email del cliente.
           type: string
           format: email
-          example: example@domain.com
+          example: joedoe@gmail.com
         bank:
           type: object
           properties:
             sbif:
               description: Codigo banco.
               type: string
-              example: "pl4293e97a87195bb9edcd"
+              example: "1234"
             type:
               description: Tipo de cuenta.(1= Corriente , 2= Vista/Cuenta RUT, 3= Ahorro)
               type: string
-              example: "active"
+              example: "1"
             num:
               description: Número de cuenta del cliente.
               type: string
@@ -2336,16 +2329,18 @@ components:
               example: "111111111"
         affiliations:
           description: Cantidad de afiliaciones.
-          type: string
-          example: "0"
+          type: integer
+          example: 0
         created_at:
           description: Fecha de registro.
           type: string
           example: "2020-09-28 20:42:59"
+          format: datetime
         update_at:
           description: Fecha de modificación.
           type: string
           example: "null"
+          format: datetime
 
     AdminAffiliationResponse:
       description: "Datos de retorno de la insercion de un afiliado"
