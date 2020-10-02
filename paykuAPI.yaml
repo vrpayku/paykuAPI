@@ -163,14 +163,15 @@ info:
   x-logo:
     url: 'https://storage.googleapis.com/storage-payku-prd/public/img/payku2020_2.svg'
 tags:
-  - name: Suscripción
-    description: Permite la vinculación de un plan a clientes, para posteriormente realizar cargos recurrentes automáticamente, según se defina en cada plan.
   - name: Transacción
     description: Permite la  creación de transacciones y posteriormente consultar su estado.
-  - name: Evento
-    description: Permite la  creación de eventos y posteriormente consultar su estado.
   - name: Marketplace
     description: Permite el registro de clientes, para posteriormente realizar la distribución según porcentaje asignado.
+  - name: Suscripción
+    description: Permite la vinculación de un plan a clientes, para posteriormente realizar cargos recurrentes automáticamente, según se defina en cada plan.
+  - name: Evento
+    description: Permite la  creación de eventos y posteriormente consultar su estado.
+  
 paths:
   /api/suclient:
     post:
@@ -1401,6 +1402,7 @@ paths:
                     - 5 Onepay
                     - 6 Pago46
                     - 7 Sweetpay
+                    - 9 Mach
                     - 99 Todos
                   type: integer
                   example: 1
@@ -1496,7 +1498,7 @@ paths:
     post:
       tags:
         - Transacción
-      summary: 'URL CALLBACK'
+      summary: 'url Callback'
       description: |
         Luego de realizado el pago por parte del usuario, payku notificara al comercio, el resultado de la operación (status), invocando al urlnotify suministrado previamente en la creación del cobro y a su vez entregara una serie de datos para las validaciones internas por parte de la aplicación del comercio, como son el order para que se identifique la transacción en su sistema, el transacción_id la cual corresponde al identificador único en payku y un verificacion_key, que corresponde a un hash de validación único por transacción. 
         Estos datos, permitirán desarrollar al comercio un llamado automático al método de validación en payku llamado ‘verificar’, el cual está diseñado para certificar el origen de la invocación al método y así descartar cualquier alteración de los datos o intento de fraude.
