@@ -24,27 +24,130 @@ info:
     protocolo HTTP, como autenticación, los cuales son soportados por la gran 
     mayoría de los clientes HTTP.
 
-    # Configuración
-    Texto
-
-    ## Autentificación
+    # Autentificación
     Payku utiliza Token Based Authentication sobre HTTPS para la autenticación.
     Para tener acceso a nuestra API, accede a tu cuenta en la sección de 
     Integración encontraras la opción de Tokens integración y API . Los request
     no autenticados o incorrectos retornarán una respuesta de token Invalido.
     
 
-    ## API Seguridad
+    # API Seguridad
     Cada solicitud, es requerido tener incluido en el header:
       - Authorization: Bearer **TOKEN-PÚBLICO**
 
-    ## Acceso al API
+    # Firma
+    En el caso del API de suscripciones se agrego una capa mas de seguridad a través
+    de una firma que se enviá en el header del request, para obtener dicha firma es
+    necesario lo siguiente:
+    
+    Se debe concatenar en formato para url el Request Path junto a todos los parámetros del request, la cual deben ser ordenados alfabéticamente por key, tal que key=value. Por lo tanto, si el valor de email cliente es “example@domain.com” el formato correcto sería “example%40domain.com” y luego concatenados con el carácter ‘&’.
+
+    Una vez que los sets de caracteres son ordenados y concatenados, el hash es calculado usando la función HMAC con cifrado tipo sha256, y el token privado.
+
+    # Errores
+    Payku usa respuestas HTTP convencionales para indicar el éxito o fracaso de un request.
+    En general, códigos en el rango de los 2xx indican éxito, códigos en el rango 4xx indican 
+    un error que falló debido a la información proporcionada (ej: un parámetro requerido fue 
+    omitido, un pago falló, etc.), y códigos en el rango de los 5xx indican un error con 
+    los servidores de Payku (estos son raros).
+
+    ## Códigos de error
+    <div class="errorContent">
+    <table>
+      <tbody>
+        <tr>
+          <td style="text-align: right"><strong class="errorTitle">400</strong>
+            <p class="psmall">Bad Request</p>
+          </td>
+          <td class="errorDescription">Hay un problema con tu request</td>
+        </tr>
+        <tr>
+          <td style="text-align: right"><strong class="errorTitle">401</strong>
+            <p class="psmall">Unauthorized</p>
+          </td>
+          <td class="errorDescription">Tu api key es incorrecta</td>
+        </tr>
+        <tr>
+          <td style="text-align: right"><strong class="errorTitle">403</strong>
+            <p class="psmall">Forbidden</p>
+          </td>
+          <td class="errorDescription">No tienes permiso para ver esta página</td>
+        </tr>
+        <tr>
+          <td style="text-align: right"><strong class="errorTitle">404</strong>
+            <p class="psmall">Not Found</p>
+          </td>
+          <td class="errorDescription">El recurso especificado no fue encontrado </td>
+        </tr>
+        <tr>
+          <td style="text-align: right"><strong class="errorTitle">405</strong>
+            <p class="psmall">Method Not Allowed</p>
+          </td>
+          <td class="errorDescription">Trataste de ingresar a un recurso con un método inválido</td>
+        </tr>
+        <tr>
+          <td style="text-align: right"><strong class="errorTitle">406</strong>
+            <p class="psmall">Not Acceptable</p>
+          </td>
+          <td class="errorDescription">Solicistaste un formato que no es json</td>
+        </tr>
+        <tr>
+          <td style="text-align: right"><strong class="errorTitle">410</strong>
+            <p class="psmall">Gone</p>
+          </td>
+          <td class="errorDescription">El recurso solicitado fue removido de nuestros servidores</td>
+        </tr>
+        <tr>
+          <td style="text-align: right"><strong class="errorTitle">422</strong>
+            <p class="psmall">Unprocessable Entity</p>
+          </td>
+          <td class="errorDescription">No podemos procesar tu solicitud, revísala.</td>
+        </tr>
+        <tr>
+          <td style="text-align: right"><strong class="errorTitle">429</strong>
+            <p class="psmall">Too Many Requests</p>
+          </td>
+          <td class="errorDescription">Estas solicitando muchos recursos! Detente!</td>
+        </tr>
+        <tr>
+          <td style="text-align: right"><strong class="errorTitle">500</strong>
+            <p class="psmall">Internal Server Error</p>
+          </td>
+          <td class="errorDescription">Tuvimos un problema con nuestro servidor. Inténtalo nuevamente mas tarde.</td>
+        </tr>
+        <tr>
+          <td style="text-align: right"><strong class="errorTitle">503</strong>
+            <p class="psmall">Service Unavailable</p>
+          </td>
+          <td class="errorDescription">Estamos offline por mantenimiento. Inténtalo nuevamente mas tarde</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    # Acceso al API
     Si tienes una cuenta en payku, puedes acceder al API REST mediante los siguientes endpoints:
     
-    |    **Site**   |**BASE URL FOR REST ENDPOINT** |
-    |     :---:     |            :---:              |
-    |**Production** |https://app.payku.cl/api       |
-    |**Sandbox**    |https://des.payku.cl/api       |
+    <div class="content">
+      <table class="center">
+        <thead>
+          <tr>
+            <th style="text-align:center;"><strong>Site</strong></th>
+            <th style="text-align:center;"><strong>BASE URL FOR REST ENDPOINT</strong></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Production</strong></td>
+            <td align="center"><a href="https://app.payku.cl/api">https://app.payku.cl/api</a></td>
+          </tr>
+          <tr>
+            <td><strong>Sandbox</strong></td>
+            <td><a href="https://des.payku.cl/api">https://des.payku.cl/api</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     -	Producción: proporciona acceso directo para generar transacciones reales. 
     - Sandbox: permite probar su integración sin afectar los datos reales.
@@ -60,9 +163,9 @@ info:
   x-logo:
     url: 'https://storage.googleapis.com/storage-payku-prd/public/img/payku2020_2.svg'
 tags:
-  - name: Suscripcion
+  - name: Suscripción
     description: Permite la vinculación de un plan a clientes, para posteriormente realizar cargos recurrentes automáticamente, según se defina en cada plan.
-  - name: Transaccion
+  - name: Transacción
     description:
   - name: Evento
     description: 
@@ -72,9 +175,9 @@ paths:
   /api/suclient:
     post:
       tags:
-        - Suscripcion
+        - Suscripción
       summary: Insertar datos a un cliente
-      description: Esto metodo permite la insercion de datos de un cliente.
+      description: Esto método permite la inserción de datos de un cliente.
       responses:
         '200':
           content:
@@ -134,11 +237,11 @@ paths:
                   type: string
                   example: "923122312"
                 address:
-                  description: Direccion del cliente.
+                  description: Dirección del cliente.
                   type: string
                   example: "Moneda 101"
                 country:
-                  description: Pais del cliente.
+                  description: País del cliente.
                   type: string
                   example: "Chile"
                 region:
@@ -161,7 +264,7 @@ paths:
   /api/suclient/{identificadorCliente}:
     get:
       tags:
-        - Suscripcion
+        - Suscripción
       summary: Consulta datos de cliente
       description: Este método permite obtener el detalles de un cliente.
       operationId: getClientById
@@ -204,9 +307,9 @@ paths:
 
     put:
       tags:
-        - Suscripcion
+        - Suscripción
       summary: Actualizar datos del cliente
-      description: Esto metodo permite la actualizacion de los datos de un cliente.
+      description: Este método permite la actualización de los datos de un cliente.
       operationId: putSuscriptionById
       parameters:
         - name: id
@@ -270,15 +373,15 @@ paths:
                   type: string
                   example: "Joe Doe Doe"
                 phone:
-                  description: Telefono del cliente.
+                  description: Teléfono del cliente.
                   type: string
                   example: "923122312"
                 address:
-                  description: Direccion del cliente.
+                  description: Dirección del cliente.
                   type: string
                   example: "Moneda 121"
                 country:
-                  description: Pais del cliente.
+                  description: País del cliente.
                   type: string
                   example: "Chile"
                 region:
@@ -296,9 +399,9 @@ paths:
 
     delete:
       tags:
-        - Suscripcion
+        - Suscripción
       summary: Eliminar cliente
-      description: Esto metodo permite la eliminacion de un cliente asociados a un id de usuario.
+      description: Este método permite la eliminación de un cliente asociados a un id de usuario.
       operationId: deleteClientById
       parameters:
         - name: id
@@ -339,9 +442,9 @@ paths:
   /api/suclient/customers:
     get:
       tags:
-        - Suscripcion
+        - Suscripción
       summary: Obtener todos los clientes
-      description: Esto metodo permite la obtener todos los clientes asociados a un id de usuario.
+      description: Este método permite la obtener todos los clientes asociados a un id de usuario.
       responses:
         '200':
           content:
@@ -377,9 +480,9 @@ paths:
   /api/sususcription:
     post:
       tags:
-        - Suscripcion
-      summary: Insertar datos para la suscripcion
-      description: Esto metodo permite la insercion de datos para una suscripcion.
+        - Suscripción
+      summary: Insertar datos para la suscripción
+      description: Esto método permite la inserción de datos para una suscripción.
       responses:
         '200':
           content:
@@ -434,9 +537,9 @@ paths:
   /api/sutransaction:
     post:
       tags:
-        - Suscripcion
-      summary: Insertar datos para la transaccion
-      description: Esto metodo permite la insercion de datos para una transaccion.
+        - Suscripción
+      summary: Insertar datos para la transacción
+      description: Este método permite la inserción de datos para una transacción.
       responses:
         '200':
           content:
@@ -491,18 +594,18 @@ paths:
                   type: string
                   example: "001"
                 description:
-                  description: Descripcion.
+                  description: Descripción.
                   type: string
-                  example: Descripcion
+                  example: Descripción
               required:
                 - suscription
 
   /api/sususcription/{identificadorSuscripcion}:
     get:
       tags:
-        - Suscripcion
-      summary: Consulta datos de suscripcion
-      description: Este método permite obtener el detalles de una suscripcion.
+        - Suscripción
+      summary: Consulta datos de suscripción
+      description: Este método permite obtener el detalles de una suscripción.
       operationId: getSuscriptionById
       parameters:
         - name: id
@@ -544,9 +647,9 @@ paths:
   /api/suclient/{identificadorSuscripcion}:
     delete:
       tags:
-        - Suscripcion
-      summary: Eliminar suscripcion
-      description: Esto metodo permite la eliminacion de una suscripcion asociada a un id de suscripcion.
+        - Suscripción
+      summary: Eliminar suscripción
+      description: Este método permite la eliminación de una suscripción asociada a un id de suscripción.
       operationId: deleteSuscriptionById
       parameters:
         - name: id
@@ -587,9 +690,9 @@ paths:
   /api/suinscriptionscards:
     post:
       tags:
-        - Suscripcion
-      summary: Afiliar tarjeta a suscripcion
-      description: Este metodo permite la Insercion de los datos de una tarjeta para suscripción.
+        - Suscripción
+      summary: Afiliar tarjeta a suscripción
+      description: Este método permite la Inserción de los datos de una tarjeta para suscripción.
       responses:
         '200':
           content:
@@ -637,9 +740,9 @@ paths:
   /api/suplan:
     post:
       tags:
-        - Suscripcion
+        - Suscripción
       summary: Inserta los datos de un plan.
-      description: Este metodo permite la Insercion de los datos para la creacion de un plan.
+      description: Este método permite la Inserción de los datos para la creación de un plan.
       responses:
         '200':
           content:
@@ -692,7 +795,7 @@ paths:
   /api/suplan/{identificadorPlan}:
     get:
       tags:
-        - Suscripcion
+        - Suscripción
       summary: Consulta datos del plan
       description: Este método permite obtener el detalles de un plan.
       operationId: getPlanById
@@ -736,7 +839,7 @@ paths:
   /api/suplan/plans:
     get:
       tags:
-        - Suscripcion
+        - Suscripción
       summary: Consulta datos de todos los planes
       description: Este método permite obtener el detalle de todos los planes.
       responses:
@@ -772,7 +875,7 @@ paths:
   /api/transaction:
     post:
       tags:
-        - Transaccion
+        - Transacción
       summary: Generar una transacción
       description: Este método permite crear una orden de pago a **Payku** y recibe como respuesta la **URL** para redirigir el browser del pagador y el **token** que identifica la transacción.
                   Una vez que el pagador efectúe el pago exitoso, **Payku** notificará el resultado a la página del comercio que se envió en el parámetro **urlnotify**.
@@ -825,7 +928,7 @@ paths:
                   type: integer
                   example: 98745
                 subject:
-                  description: Descripcion de la orden
+                  description: Descripción de la orden
                   type: string
                   example: test subject
                 amount:
@@ -838,7 +941,7 @@ paths:
                     - 1 Webpay
                     - 2 Kiphu
                     - 3 Multicaja Efectivo
-                    - 4 Multicaja Trasnferencia
+                    - 4 Multicaja Transferencia
                     - 5 Onepay
                     - 6 Pago46
                     - 7 Sweetpay
@@ -864,14 +967,14 @@ paths:
   /api/transaction/{identificadorTrasaccion}:
     get:
       tags:
-        - Transaccion
+        - Transacción
       summary: 'Obtener estado de un pago'
-      description: 'Este metodo permite obtener la informacion de un pago realizado en **Payku**'
+      description: 'Este método permite obtener la informacion de un pago realizado en **Payku**'
       operationId: getTransactionById
       parameters:
         - name: id
           in: path
-          description: id de la transaccion a solicitar
+          description: id de la transacción a solicitar
           required: true
           schema:
             type: string
@@ -912,10 +1015,10 @@ paths:
   /api/verificar:
     post:
       tags:
-        - Transaccion
+        - transacción
       summary: 'URL CALLBACK'
       description: |
-        Luego de realizado el pago por parte del usuario, payku notificara al comercio, el resultado de la operación (status), invocando al urlnotify suministrado previamente en la creación del cobro y a su vez entregara una serie de datos para las validaciones internas por parte de la aplicación del comercio, como son el order para que se identifique la transacción en su sistema, el transaccion_id la cual corresponde al identificador único en payku y un verificacion_key, que corresponde a un hash de validación único por transacción. 
+        Luego de realizado el pago por parte del usuario, payku notificara al comercio, el resultado de la operación (status), invocando al urlnotify suministrado previamente en la creación del cobro y a su vez entregara una serie de datos para las validaciones internas por parte de la aplicación del comercio, como son el order para que se identifique la transacción en su sistema, el transacción_id la cual corresponde al identificador único en payku y un verificacion_key, que corresponde a un hash de validación único por transacción. 
         Estos datos, permitirán desarrollar al comercio un llamado automático al método de validación en payku llamado ‘verificar’, el cual está diseñado para certificar el origen de la invocación al método y así descartar cualquier alteración de los datos o intento de fraude.
       responses:
         '200':
@@ -950,7 +1053,7 @@ paths:
                   type: string
                   example: 2ba83615f863e72sdca5dfd0a6df2782
                 order:
-                  description: Indentificador unico de transaccion enviado por el comercio.
+                  description: Indentificador unico de transacción enviado por el comercio.
                   type: string
                   example: 1568041684
               required:
@@ -1128,7 +1231,7 @@ paths:
       tags:
         - Marketplace
       summary: Administrar clientes
-      description: Este metodo permite la insercion de datos de un cliente.
+      description: Este método permite la insercion de datos de un cliente.
       responses:
         '200':
           content:
@@ -1266,7 +1369,7 @@ paths:
       tags:
         - Marketplace
       summary: Eliminar cliente
-      description: Esto metodo permite la eliminacion de un cliente asociados a un id de usuario.
+      description: Esto método permite la eliminacion de un cliente asociados a un id de usuario.
       operationId: getClientDeleteById
       parameters:
         - name: id
@@ -1309,7 +1412,7 @@ paths:
       tags:
         - Marketplace
       summary: Administrar afiliaciones
-      description: Este metodo permite registra los datos para la afiliación.
+      description: Este método permite registra los datos para la afiliación.
       responses:
         '200':
           content:
@@ -1429,7 +1532,7 @@ paths:
       tags:
         - Marketplace
       summary: Eliminar afiliaccion
-      description: Esto metodo permite la eliminacion de una afiliacion asociados a un id.
+      description: Esto método permite la eliminacion de una afiliacion asociados a un id.
       operationId: getAffiliationDeleteById
       parameters:
         - name: id
@@ -2000,12 +2103,12 @@ components:
           type: array
 
     TransactionResponse:
-      description: "Datos de retorno de la creacion de una transaccion"
+      description: "Datos de retorno de la creacion de una transacción"
       type: object
       properties:
         status:
           type: string
-          description: Estatus de la transaccion. 
+          description: Estatus de la transacción. 
           example: 'register'
         id:
           type: string
@@ -2017,12 +2120,12 @@ components:
           example: "https://BASE-URL/url_de_pago"
 
     IdentifierResponse:
-      description: "Datos de retorno de estado de una transaccion"
+      description: "Datos de retorno de estado de una transacción"
       type: object
       properties:
         status:
           type: string
-          description: Estatus de la transaccion. 
+          description: Estatus de la transacción. 
           example: "success"
         id:
           type: string
@@ -2061,7 +2164,7 @@ components:
               example: "107742"
             transaction_id:
               type: string
-              description: Identificador de la transaccion creado por payku. 
+              description: Identificador de la transacción creado por payku. 
               example: "107999"
             verification_key:
               type: string
@@ -2084,7 +2187,7 @@ components:
               example: "CLP"
 
     VerificationResponse:
-      description: "Datos de retorno de la creacion de una transaccion"
+      description: "Datos de retorno de la creacion de una transacción"
       type: object
       properties:
         order:
