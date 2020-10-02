@@ -1774,7 +1774,7 @@ paths:
       tags:
         - Marketplace
       summary: Insercion de un cliente
-      description: Este método permite la insercion de datos de un cliente.
+      description: Este método permite la inserción de datos de un cliente.
       responses:
         '200':
           content:
@@ -2044,7 +2044,7 @@ paths:
       tags:
         - Marketplace
       summary: Administrar afiliaciones
-      description: Este método permite registra los datos para la afiliación.
+      description: Este método permite registrar los datos para la afiliación.
       responses:
         '200':
           content:
@@ -2164,8 +2164,8 @@ paths:
     get:
       tags:
         - Marketplace
-      summary: Consulta datos de la afiliacion
-      description: Este método permite obtener el detalles de una afiliacion.
+      summary: Consulta datos de la afiliación
+      description: Este método permite obtener el detalles de una afiliación.
       operationId: getAffiliationById
       parameters:
         - name: id
@@ -2229,8 +2229,8 @@ paths:
     delete:
       tags:
         - Marketplace
-      summary: Eliminar afiliaccion
-      description: Esto método permite la eliminacion de una afiliacion asociados a un id.
+      summary: Eliminar afiliación
+      description: Esto método permite la eliminacion de una afiliación asociados a un id.
       operationId: getAffiliationDeleteById
       parameters:
         - name: id
@@ -2293,7 +2293,7 @@ paths:
 components:
   schemas:
     AdminClientResponse:
-      description: "Datos de retorno de la insercion de un cliente"
+      description: "Datos de retorno de la inserción de un cliente"
       type: object
       properties:
         status:
@@ -2352,7 +2352,7 @@ components:
           example: null
 
     ClientIdResponse:
-      description: "Datos de retorno de la insercion de un cliente"
+      description: "Datos de retorno de la inserción de un cliente"
       type: object
       properties:
         status:
@@ -2558,7 +2558,7 @@ components:
           example: 'madb93fc00a2cf6f4449'
         
     DeleteAffiliationResponse:
-      description: "Datos de retorno de la eliminacion de una afiliacion"
+      description: "Datos de retorno de la eliminacion de una afiliación"
       type: object
       properties:
         status:
@@ -2572,7 +2572,7 @@ components:
         
         
     PlanResponse:
-      description: "Datos de retorno de la insercion de un plan"
+      description: "Datos de retorno de la inserción de un plan"
       type: object
       properties:
         status:
@@ -2599,7 +2599,7 @@ components:
           example: 'success'
     
     CreateSuscriptionResponse:
-      description: "Datos de retorno de la insercion de datos de una suscripcion"
+      description: "Datos de retorno de la inserción de datos de una suscripcion"
       type: object
       properties:
         status:
@@ -2718,7 +2718,7 @@ components:
                 example: 0
 
     CreateSuTransactionResponse:
-      description: "Datos de retorno de la insercion de datos de una suscripcion"
+      description: "Datos de retorno de la inserción de datos de una suscripcion"
       type: object
       properties:
         status:
@@ -2739,7 +2739,7 @@ components:
           example: "204444"
 
     CardSuscriptionResponse:
-      description: "Datos de retorno de la insercion de datos de una tarjeta"
+      description: "Datos de retorno de la inserción de datos de una tarjeta"
       type: object
       properties:
         status:
@@ -3107,7 +3107,7 @@ components:
               example: 0
 
     AdminClientMarketResponse:
-      description: "Datos de retorno de la insercion de un cliente"
+      description: "Datos de retorno de la inserción de un cliente"
       type: object
       properties:
         id:
@@ -3166,7 +3166,7 @@ components:
           format: datetime
 
     AdminAffiliationResponse:
-      description: "Datos de retorno de la insercion de un afiliado"
+      description: "Datos de retorno de la inserción de un afiliado"
       type: object
       properties:
         id:
