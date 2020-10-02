@@ -7,10 +7,10 @@ servers:
 info:
   description: |
     
-    # Visión general
-    Podrás usar nuestra API para acceder a los distintos endpoints, donde te 
-    permitirá generar y gestionar pagos mediante distintos métodos y obtener 
-    información de ellos.
+    # Introducción
+    Bienvenido a la API de Payku. Puedes usar nuestra API para acceder a los distintos 
+    endpoints de Payku, donde podrás generar y gestionar pagos mediante distintos 
+    métodos y obtener información de ellos.
 
     El API está organizado alrededor de REST. Posee URLs predecibles y 
     orientadas a recursos, y utiliza códigos de respuesta HTTP para indicar el 
@@ -166,9 +166,9 @@ tags:
   - name: Suscripción
     description: Permite la vinculación de un plan a clientes, para posteriormente realizar cargos recurrentes automáticamente, según se defina en cada plan.
   - name: Transacción
-    description:
+    description: Permite la  creación de transacciones y posteriormente consultar su estado.
   - name: Evento
-    description: 
+    description: Permite la  creación de eventos y posteriormente consultar su estado.
   - name: Marketplace
     description: Permite el registro de clientes, para posteriormente realizar la distribución según porcentaje asignado.
 paths:
@@ -197,6 +197,25 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error401'
       x-codeSamples:
+        - lang: 'CURL'
+          source: |
+            curl -X POST \
+            https://BASE_URL/api/suclient \
+            -H 'Accept: application/json, text/plain, */*' \
+            -H 'Sign: SIGN  \  
+            -H 'Authorization: Bearer TOKEN_PUBLICO  \   
+            -H 'Content-Type: application/json,application/json' \   
+            -H 'Host: BASE_URL' \   
+            -d {     
+                "email": "joedoe@gmail.com",
+                "name": "Joe Doe",
+                "phone": "923122312",
+                "address": "Moneda 101",
+                "country": "Chile",
+                "region": "Metropolitana",
+                "city": "Santiago",
+                "postal_code": "850000
+              }'
         - lang: 'PHP'
           source: |
             $client = new \GuzzleHttp\Client();         
@@ -233,7 +252,7 @@ paths:
                   type: string
                   example: "Joe Doe"
                 phone:
-                  description: Telefono del cliente.
+                  description: Teléfono del cliente.
                   type: string
                   example: "923122312"
                 address:
@@ -245,7 +264,7 @@ paths:
                   type: string
                   example: "Chile"
                 region:
-                  description: Region del cliente.
+                  description: Región del cliente.
                   type: string
                   example: "Metropolitana"
                 city: 
@@ -294,6 +313,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error401'
       x-codeSamples:
+        - lang: 'CURL'
+          source: |
+            curl -X GET \
+            https://BASE_URL/api/suclient/id \
+            -H 'Accept: application/json, text/plain, */*' \
+            -H 'Sign: SIGN  \  
+            -H 'Authorization: Bearer TOKEN_PUBLICO  \   
+            -H 'Content-Type: application/json,application/json' \   
+            -H 'Host: BASE_URL' \   
         - lang: 'PHP'
           source: |
             $client = new \GuzzleHttp\Client();         
@@ -337,19 +365,38 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error401'
       x-codeSamples:
+        - lang: 'CURL'
+          source: |
+            curl -X PUT \
+            https://BASE_URL/api/suclient/id \
+            -H 'Accept: application/json, text/plain, */*' \
+            -H 'Sign: SIGN  \  
+            -H 'Authorization: Bearer TOKEN_PUBLICO  \   
+            -H 'Content-Type: application/json,application/json' \   
+            -H 'Host: BASE_URL' \   
+            -d {     
+                "email": "joedoe@gmail.com",
+                "name": "Joe Doe Doe",
+                "phone": "923122312",
+                "address": "Moneda 121",
+                "country": "Chile",
+                "region": "Metropolitana",
+                "city": "Santiago",
+                "postal_code": "750000"
+              }'
         - lang: 'PHP'
           source: |
             $client = new \GuzzleHttp\Client();         
               $body = $client->request('PUT', 'https://[base URL]//api/suclient/cla90927fa9b30e1dfffa0', [             
                 'json' => [          
-                  'email' => example2@domain.com, 
-                  'name' => 'name2', 
-                  'phone' => 'phone2', 
-                  'address' => 'address2', 
-                  'country' => 'country2', 
-                  'region'  => 'region2', 
-                  'city'    => 'city2', 
-                  'postal_code' => 'postal_code2',
+                  'email' => joedoe@gmail.com, 
+                  'name' => 'Joe Doe Doe', 
+                  'phone' => '923122312', 
+                  'address' => 'Moneda 121', 
+                  'country' => 'Chile', 
+                  'region'  => 'Metropolitana', 
+                  'city'    => 'Santiago', 
+                  'postal_code' => '750000',
                 ],  
               ],             
               'headers' => [                 
@@ -385,7 +432,7 @@ paths:
                   type: string
                   example: "Chile"
                 region:
-                  description: Region del cliente.
+                  description: Región del cliente.
                   type: string
                   example: "Metropolitana"
                 city: 
@@ -429,6 +476,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error401'
       x-codeSamples:
+        - lang: 'CURL'
+          source: |
+            curl -X DELETE \
+            https://BASE_URL/api/suclient/id \
+            -H 'Accept: application/json, text/plain, */*' \
+            -H 'Sign: SIGN  \  
+            -H 'Authorization: Bearer TOKEN_PUBLICO  \   
+            -H 'Content-Type: application/json,application/json' \   
+            -H 'Host: BASE_URL' \   
         - lang: 'PHP'
           source: |
             $client = new \GuzzleHttp\Client();         
@@ -466,6 +522,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error401'
       x-codeSamples:
+        - lang: 'CURL'
+          source: |
+            curl -X GET \
+            https://BASE_URL/api/suclient/customers \
+            -H 'Accept: application/json, text/plain, */*' \
+            -H 'Sign: SIGN  \  
+            -H 'Authorization: Bearer TOKEN_PUBLICO  \   
+            -H 'Content-Type: application/json,application/json' \   
+            -H 'Host: BASE_URL' \   
         - lang: 'PHP'
           source: |
             $client = new \GuzzleHttp\Client();         
@@ -502,6 +567,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error401'
       x-codeSamples:
+        - lang: 'CURL'
+          source: |
+            curl -X POST \
+            https://BASE_URL/api/sususcription \
+            -H 'Accept: application/json, text/plain, */*' \
+            -H 'Sign: SIGN  \  
+            -H 'Authorization: Bearer TOKEN_PUBLICO  \   
+            -H 'Content-Type: application/json,application/json' \   
+            -H 'Host: BASE_URL' \   
+            -d {     
+                "plan": "pl9697fb170834ad42dd00",
+                "client": "cl9b1e1dd988694f30fa30"
+              }'
         - lang: 'PHP'
           source: |
             $client = new \GuzzleHttp\Client();         
@@ -559,12 +637,27 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error401'
       x-codeSamples:
+        - lang: 'CURL'
+          source: |
+            curl -X POST \
+            https://BASE_URL/api/sutransaction \
+            -H 'Accept: application/json, text/plain, */*' \
+            -H 'Sign: SIGN  \  
+            -H 'Authorization: Bearer TOKEN_PUBLICO  \   
+            -H 'Content-Type: application/json,application/json' \   
+            -H 'Host: BASE_URL' \   
+            -d {     
+                "suscription": "sucaab7865dceaff49d8b3",
+                "amount": "10000",
+                "order": "001",
+                "description": "Descripción"
+              }'
         - lang: 'PHP'
           source: |
             $client = new \GuzzleHttp\Client();         
               $body = $client->request('POST', 'https://[base URL]/api/sutransaction, [             
                 'json' => [                
-                  ' suscription' => sucaab7865dceaff49d8b3, 
+                  'suscription' => sucaab7865dceaff49d8b3, 
                   'order' => '001', 
                   'monto' => '10000', 
                   'description' => ' descripcion'
@@ -633,6 +726,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error401'
       x-codeSamples:
+        - lang: 'CURL'
+          source: |
+            curl -X GET \
+            https://BASE_URL/api/sususcription/id \
+            -H 'Accept: application/json, text/plain, */*' \
+            -H 'Sign: SIGN  \  
+            -H 'Authorization: Bearer TOKEN_PUBLICO  \   
+            -H 'Content-Type: application/json,application/json' \   
+            -H 'Host: BASE_URL' \   
         - lang: 'PHP'
           source: |
             $client = new \GuzzleHttp\Client();         
@@ -644,7 +746,6 @@ paths:
               ])->getBody();           
             $response = json_decode($body);
 
-  /api/suclient/{identificadorSuscripcion}:
     delete:
       tags:
         - Suscripción
@@ -677,6 +778,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error401'
       x-codeSamples:
+        - lang: 'CURL'
+          source: |
+            curl -X DELETE \
+            https://BASE_URL/api/sususcription/id \
+            -H 'Accept: application/json, text/plain, */*' \
+            -H 'Sign: SIGN  \  
+            -H 'Authorization: Bearer TOKEN_PUBLICO  \   
+            -H 'Content-Type: application/json,application/json' \   
+            -H 'Host: BASE_URL' \   
         - lang: 'PHP'
           source: |
             $client = new \GuzzleHttp\Client();         
@@ -712,6 +822,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error401'
       x-codeSamples:
+        - lang: 'CURL'
+          source: |
+            curl -X POST \
+            https://BASE_URL/api/suinscriptionscards \
+            -H 'Accept: application/json, text/plain, */*' \
+            -H 'Sign: SIGN  \  
+            -H 'Authorization: Bearer TOKEN_PUBLICO  \   
+            -H 'Content-Type: application/json,application/json' \   
+            -H 'Host: BASE_URL' \   
+            -d {     
+                "id": "sucaab7865dceaff49d8b3"
+              }'
         - lang: 'PHP'
           source: |
             $client = new \GuzzleHttp\Client();         
@@ -762,6 +884,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error401'
       x-codeSamples:
+        - lang: 'CURL'
+          source: |
+            curl -X POST \
+            https://BASE_URL/api/suplan \
+            -H 'Accept: application/json, text/plain, */*' \
+            -H 'Sign: SIGN  \  
+            -H 'Authorization: Bearer TOKEN_PUBLICO  \   
+            -H 'Content-Type: application/json,application/json' \   
+            -H 'Host: BASE_URL' \   
+            -d {     
+                "name": "Test plan",
+                "description": "Test Plan"
+              }'
         - lang: 'PHP'
           source: |
             $client = new \GuzzleHttp\Client();         
@@ -825,6 +960,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error401'
       x-codeSamples:
+        - lang: 'CURL'
+          source: |
+            curl -X GET \
+            https://BASE_URL/api/suplan/id \
+            -H 'Accept: application/json, text/plain, */*' \
+            -H 'Sign: SIGN  \  
+            -H 'Authorization: Bearer TOKEN_PUBLICO  \   
+            -H 'Content-Type: application/json,application/json' \   
+            -H 'Host: BASE_URL' \   
         - lang: 'PHP'
           source: |
             $client = new \GuzzleHttp\Client();         
@@ -861,6 +1005,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error401'
       x-codeSamples:
+        - lang: 'CURL'
+          source: |
+            curl -X GET \
+            https://BASE_URL/api/suplan/plans \
+            -H 'Accept: application/json, text/plain, */*' \
+            -H 'Sign: SIGN  \  
+            -H 'Authorization: Bearer TOKEN_PUBLICO  \   
+            -H 'Content-Type: application/json,application/json' \   
+            -H 'Host: BASE_URL' \   
         - lang: 'PHP'
           source: |
             $client = new \GuzzleHttp\Client();         
@@ -908,10 +1061,31 @@ paths:
             -H 'Host: BASE-URL \
             -d '{
               "email": "test@domain.com",
+              "order": 5696
               "subject": "Cliente Test",
               "amount": 5696,
-              "order": "5696"
+              "payment": 1,
+              "urlreturn": "https://you_web_site/urlreturn",
+              "urlnotify": "https://you_web_site/urlnotify"
             }'
+        - lang: 'PHP'
+          source: |
+            $client = new \GuzzleHttp\Client();         
+              $body = $client->request('POST', 'https://[base URL]/api/transaction', [
+                'json' => [                
+                  'email' => 'joedoe@gmail.cl', 
+                  'order' => 98745, 
+                  'subject' => 'Client Test',
+                  'amount' => 25000,  
+                  'payment' => 1, 
+                  'urlreturn' => 'https://you_web_site/urlreturn',
+                  'urlnotify' => 'https://you_web_site/urlnotify'
+                  ],  
+                'headers' => [                                  
+                  'Authorization' => 'Bearer 8c872egfdg996f8b418c872e996f8b418c872e996f8b41'              
+                ]           
+              ])->getBody();           
+            $response = json_decode($body);
       requestBody:
         content:
           application/json:
@@ -1011,11 +1185,20 @@ paths:
             -H 'Authorization: Bearer TOKEN-PUBLICO' \
             -H 'Content-Type: application/json,application/json' \
             -H 'Host: BASE-URL ' \
+        - lang: 'PHP'
+          source: |
+            $client = new \GuzzleHttp\Client();         
+              $body = $client->request('GET', 'https://[base URL]/api/transaction/10ac494c1d8da71d98ea', [
+                'headers' => [                                  
+                  'Authorization' => 'Bearer 8c872egfdg996f8b418c872e996f8b418c872e996f8b41'              
+                ]           
+              ])->getBody();           
+            $response = json_decode($body);
 
   /api/verificar:
     post:
       tags:
-        - transacción
+        - Transacción
       summary: 'URL CALLBACK'
       description: |
         Luego de realizado el pago por parte del usuario, payku notificara al comercio, el resultado de la operación (status), invocando al urlnotify suministrado previamente en la creación del cobro y a su vez entregara una serie de datos para las validaciones internas por parte de la aplicación del comercio, como son el order para que se identifique la transacción en su sistema, el transacción_id la cual corresponde al identificador único en payku y un verificacion_key, que corresponde a un hash de validación único por transacción. 
@@ -1095,12 +1278,12 @@ paths:
               -H 'Content-Type: application/json,application/json' \   
               -H 'Host: BASE_URL' \   
               -d {     
-                "name": "Event 1",     
-                "event": "157526894509521",     
+                "name": "Event",     
+                "event": "98374",     
                 "date_event": "2020-12-20",     
-                "date_payment": "2020-12-21",     
-                "date_closing_sales": "2020-12-19 23:00:00",     
-                "url_logo": "https://payku.cl/logo_event1.png",     
+                "date_payment": "2020-12-22",     
+                "date_closing_sales": "2020-12-19 23:59:00",     
+                "url_logo": "https://example.cl/logo_event1.png",     
                 "url_event": "https://payku.cl/event1",     
                 "service_sale": "10",     
                 "affiliation": [
@@ -1108,6 +1291,29 @@ paths:
                   ["afiliate2@gmail.com",  50]
                 ] 
               }'
+        - lang: 'PHP'
+          source: |
+            $client = new \GuzzleHttp\Client();         
+              $body = $client->request('POST', 'https://[base URL]/api/event', [
+                'json' => [                
+                    'name' => 'Event',     
+                    'event' => '98374',     
+                    'date_event' => '2020-12-20',     
+                    'date_payment' => '2020-12-22',     
+                    'date_closing_sales' => '2020-12-19 23:59:00',     
+                    'url_logo' => 'https://example.cl/logo_event1.png',     
+                    'url_event' => 'https://payku.cl/event1',     
+                    'service_sale' => '10',     
+                    'affiliation' => [
+                      ['afiliate1@gmail.com',  50], 
+                      ['afiliate2@gmail.com',  50]
+                    ]
+                  ],  
+                'headers' => [                                  
+                  'Authorization' => 'Bearer 8c872egfdg996f8b418c872e996f8b418c872e996f8b41'              
+                ]           
+              ])->getBody();           
+            $response = json_decode($body);
       requestBody:
         content:
           application/json:
@@ -1205,32 +1411,27 @@ paths:
       x-codeSamples:
         - lang: 'CURL'
           source: |
-            curl -X POST \
+            curl -X GET \
               https://BASE_URL/api/event \
               -H 'Accept: application/json, text/plain, */*' \
               -H 'Authorization: Bearer TOKEN_PUBLICO  \   
               -H 'Content-Type: application/json,application/json' \   
               -H 'Host: BASE_URL' \   
-              -d {     
-                "name": "Event 1",     
-                "event": "157526894509521",     
-                "date_event": "2020-12-20",     
-                "date_payment": "2020-12-21",     
-                "date_closing_sales": "2020-12-19 23:00:00",     
-                "url_logo": "https://payku.cl/logo_event1.png",     
-                "url_event": "https://payku.cl/event1",     
-                "service_sale": "10",     
-                "affiliation": [
-                  ["afiliate1@gmail.com",  50], 
-                  ["afiliate2@gmail.com",  50]
-                ] 
-              }'
+        - lang: 'PHP'
+          source: |
+            $client = new \GuzzleHttp\Client();         
+              $body = $client->request('GET', 'https://[base URL]/api/event/98374', [  
+                'headers' => [                                  
+                  'Authorization' => 'Bearer 8c872egfdg996f8b418c872e996f8b418c872e996f8b41'              
+                ]           
+              ])->getBody();           
+            $response = json_decode($body);
 
   /api/maclient:
     post:
       tags:
         - Marketplace
-      summary: Administrar clientes
+      summary: Insercion de un cliente
       description: Este método permite la insercion de datos de un cliente.
       responses:
         '200':
@@ -1251,6 +1452,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error401'
       x-codeSamples:
+        - lang: 'CURL'
+          source: |
+            curl -X POST \
+            https://BASE_URL/api/maclient \
+            -H 'Accept: application/json, text/plain, */*' \
+            -H 'Sign: SIGN  \  
+            -H 'Authorization: Bearer TOKEN_PUBLICO  \   
+            -H 'Content-Type: application/json,application/json' \   
+            -H 'Host: BASE_URL' \   
+            -d {     
+                "email": "joedoe@gmail.com",
+                "name": "Joe Doe",
+                "phone": "923122312",
+                "bank": {
+                  "sbif": "1234",
+                  "type": "1",
+                  "num": "12312313121",
+                  "rut": "111111111"
+                }
+              }'
         - lang: 'PHP'
           source: |
             $client = new \GuzzleHttp\Client();         
@@ -1354,6 +1575,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error401'
       x-codeSamples:
+        - lang: 'CURL'
+          source: |
+            curl -X GET \
+            https://BASE_URL/api/maclient/id \
+            -H 'Accept: application/json, text/plain, */*' \
+            -H 'Sign: SIGN  \  
+            -H 'Authorization: Bearer TOKEN_PUBLICO  \   
+            -H 'Content-Type: application/json,application/json' \   
+            -H 'Host: BASE_URL' \   
         - lang: 'PHP'
           source: |
             $client = new \GuzzleHttp\Client();         
@@ -1397,6 +1627,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error401'
       x-codeSamples:
+        - lang: 'CURL'
+          source: |
+            curl -X DELETE \
+            https://BASE_URL/api/maclient/id \
+            -H 'Accept: application/json, text/plain, */*' \
+            -H 'Sign: SIGN  \  
+            -H 'Authorization: Bearer TOKEN_PUBLICO  \   
+            -H 'Content-Type: application/json,application/json' \   
+            -H 'Host: BASE_URL' \   
         - lang: 'PHP'
           source: |
             $client = new \GuzzleHttp\Client();         
@@ -1432,6 +1671,25 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error401'
       x-codeSamples:
+        - lang: 'CURL'
+          source: |
+            curl -X POST \
+            https://BASE_URL/api/maaffiliation \
+            -H 'Accept: application/json, text/plain, */*' \
+            -H 'Sign: SIGN  \  
+            -H 'Authorization: Bearer TOKEN_PUBLICO  \   
+            -H 'Content-Type: application/json,application/json' \   
+            -H 'Host: BASE_URL' \   
+            -d {     
+                "name": "name",
+                "percentage": "20",
+                "affiliation": [
+                  {
+                    "id": "ma9fd16221a9645b0036",
+                    "percentage": "80"
+                  }
+                ]
+              }'
         - lang: 'PHP'
           source: |
             $client = new \GuzzleHttp\Client();         
@@ -1517,6 +1775,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error401'
       x-codeSamples:
+        - lang: 'CURL'
+          source: |
+            curl -X GET \
+            https://BASE_URL/api/maaffiliation/id \
+            -H 'Accept: application/json, text/plain, */*' \
+            -H 'Sign: SIGN  \  
+            -H 'Authorization: Bearer TOKEN_PUBLICO  \   
+            -H 'Content-Type: application/json,application/json' \   
+            -H 'Host: BASE_URL' \   
         - lang: 'PHP'
           source: |
             $client = new \GuzzleHttp\Client();         
@@ -1560,6 +1827,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error401'
       x-codeSamples:
+        - lang: 'CURL'
+          source: |
+            curl -X DELETE \
+            https://BASE_URL/api/maaffiliation/id \
+            -H 'Accept: application/json, text/plain, */*' \
+            -H 'Sign: SIGN  \  
+            -H 'Authorization: Bearer TOKEN_PUBLICO  \   
+            -H 'Content-Type: application/json,application/json' \   
+            -H 'Host: BASE_URL' \   
         - lang: 'PHP'
           source: |
             $client = new \GuzzleHttp\Client();         
@@ -1601,11 +1877,11 @@ components:
           type: string
           example: "Moneda 101"
         country:
-          description: Pais del cliente.
+          description: País del cliente.
           type: string
           example: "Chile"
         region:
-          description: Region del cliente.
+          description: Región del cliente.
           type: string
           example: "Metropolitana"
         city: 
@@ -1664,11 +1940,11 @@ components:
           type: string
           example: "Santiago"
         region:
-          description: Region del cliente.
+          description: Región del cliente.
           type: string
           example: "Metropolitana"
         country:
-          description: Pais del cliente.
+          description: País del cliente.
           type: string
           example: "Chile"
         postal_code:
@@ -1785,11 +2061,11 @@ components:
           type: string
           example: "Santiago"
         region:
-          description: Region del cliente.
+          description: Región del cliente.
           type: string
           example: "Metropolitana"
         country:
-          description: Pais del cliente.
+          description: País del cliente.
           type: string
           example: "Chile"
         postal_code:
