@@ -1427,7 +1427,7 @@ paths:
       tags:
         - Transacción
       summary: 'Obtener estado de un pago'
-      description: 'Este método permite obtener la informacion de un pago realizado en **Payku**'
+      description: 'Este método permite obtener la información de un pago realizado en **Payku**'
       operationId: getTransactionById
       parameters:
         - name: id
@@ -1775,7 +1775,7 @@ paths:
     post:
       tags:
         - Marketplace
-      summary: Insercion de un cliente
+      summary: Inserción de un cliente
       description: Este método permite la inserción de datos de un cliente.
       responses:
         '200':
@@ -1981,7 +1981,7 @@ paths:
       tags:
         - Marketplace
       summary: Eliminar cliente
-      description: Esto método permite la eliminacion de un cliente asociados a un id de usuario.
+      description: Esto método permite la eliminación de un cliente asociados a un id de usuario.
       operationId: getClientDeleteById
       parameters:
         - name: id
@@ -2232,7 +2232,7 @@ paths:
       tags:
         - Marketplace
       summary: Eliminar afiliación
-      description: Esto método permite la eliminacion de una afiliación asociados a un id.
+      description: Esto método permite la eliminación de una afiliación asociados a un id.
       operationId: getAffiliationDeleteById
       parameters:
         - name: id
@@ -2319,7 +2319,7 @@ components:
           description: Email del cliente. 
           example: "joedoe@gmail.com"
         address:
-          description: Direccion del cliente.
+          description: Dirección del cliente.
           type: string
           example: "Moneda 101"
         country:
@@ -2378,7 +2378,7 @@ components:
           description: Email del cliente. 
           example: "joedoe@gmail.com"
         address:
-          description: Direccion del cliente.
+          description: Dirección del cliente.
           type: string
           example: "Moneda 101"
         city: 
@@ -2475,7 +2475,7 @@ components:
                     example: "success"
 
     ModifyClientResponse:
-      description: "Datos de retorno de la modificacion de un cliente"
+      description: "Datos de retorno de la modificación de un cliente"
       type: object
       properties:
         status:
@@ -2499,7 +2499,7 @@ components:
           description: Email del cliente. 
           example: "joedoe@gmail.com"
         address:
-          description: Direccion del cliente.
+          description: Dirección del cliente.
           type: string
           example: "Moneda 121"
         city: 
@@ -2534,7 +2534,7 @@ components:
           example: null
 
     DeleteClientResponse:
-      description: "Datos de retorno de la eliminacion de un cliente"
+      description: "Datos de retorno de la eliminación de un cliente"
       type: object
       properties:
         status:
@@ -2547,7 +2547,7 @@ components:
           example: 'cl0be4c8e623c167bc8b29'
 
     DeleteClientMarketResponse:
-      description: "Datos de retorno de la eliminacion de un cliente"
+      description: "Datos de retorno de la eliminación de un cliente"
       type: object
       properties:
         status:
@@ -2560,7 +2560,7 @@ components:
           example: 'madb93fc00a2cf6f4449'
         
     DeleteAffiliationResponse:
-      description: "Datos de retorno de la eliminacion de una afiliación"
+      description: "Datos de retorno de la eliminación de una afiliación"
       type: object
       properties:
         status:
@@ -2588,7 +2588,7 @@ components:
         
 
     DeleteSuscriptionResponse:
-      description: "Datos de retorno de la eliminacion de un cliente"
+      description: "Datos de retorno de la eliminación de un cliente"
       type: object
       properties:
         id:
@@ -2601,7 +2601,7 @@ components:
           example: 'success'
     
     CreateSuscriptionResponse:
-      description: "Datos de retorno de la inserción de datos de una suscripcion"
+      description: "Datos de retorno de la inserción de datos de una suscripción"
       type: object
       properties:
         status:
@@ -2720,7 +2720,7 @@ components:
                 example: 0
 
     CreateSuTransactionResponse:
-      description: "Datos de retorno de la inserción de datos de una suscripcion"
+      description: "Datos de retorno de la inserción de datos de una suscripción"
       type: object
       properties:
         status:
@@ -2758,7 +2758,7 @@ components:
           example: http://127.0.0.2/gateway/registrosuscripcion?plan=true&token=246&validacion=d6b32 8e57c&tarjetaadicional=true
 
     SuscriptionIdResponse:
-      description: "Datos de retorno de la consultada de una suscripcion"
+      description: "Datos de retorno de la consultada de una suscripción"
       type: object
       properties:
         status:
@@ -2825,7 +2825,7 @@ components:
           type: array
 
     TransactionResponse:
-      description: "Datos de retorno de la creacion de una transacción"
+      description: "Datos de retorno de la creación de una transacción"
       type: object
       properties:
         status:
@@ -2909,7 +2909,7 @@ components:
               example: "CLP"
 
     VerificationResponse:
-      description: "Datos de retorno de la creacion de una transacción"
+      description: "Datos de retorno de la creación de una transacción"
       type: object
       properties:
         order:
@@ -2923,7 +2923,7 @@ components:
           example: "VALID"
     
     EventCreateResponse:
-      description: "Datos de retorno de la creacion de un evento"
+      description: "Datos de retorno de la creación de un evento"
       type: object
       properties:
         status:
@@ -2952,7 +2952,7 @@ components:
           example: "2020-12-19 23:59:00"
         url_logo:
           type: string
-          description: url que pertenece al evento .
+          description: url del logo que pertenece al evento .
           format: url
           example: "https://example.cl/logo_event1.png"
         url_event:
@@ -2974,7 +2974,7 @@ components:
               example: "10.00"
         affiliaction:
           type: object
-          description: Informacion de los afiliados.
+          description: Información de los afiliados.
           properties:
             id:
               type: string
@@ -3018,7 +3018,7 @@ components:
               example: 0
 
     EventIdResponse:
-      description: "Datos de retorno de la creacion de un evento"
+      description: "Datos de retorno de la creación de un evento"
       type: object
       properties:
         id:
@@ -3043,7 +3043,7 @@ components:
           example: "2020-12-19 23:59:00"
         url_logo:
           type: string
-          description: url que pertenece al evento .
+          description: url del logo que pertenece al evento .
           format: url
           example: "https://example.cl/logo_event1.png"
         url_event:
@@ -3065,7 +3065,7 @@ components:
               example: "10.00"
         affiliaction:
           type: object
-          description: Informacion de los afiliados.
+          description: Información de los afiliados.
           properties:
             id:
               type: string
@@ -3301,7 +3301,7 @@ components:
           example: Not Found
         id:
           type: string
-          description: Informacion de id
+          description: Información de id
           example: is not valid
           
 
