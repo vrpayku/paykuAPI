@@ -2735,10 +2735,14 @@ components:
           description: Monto.
           type: string
           example: "10000"
-        transaction:
+        transaction_id:
           description: Numero de transacción.
           type: string
           example: "204444"
+        verification_key:
+          description:
+          type: string
+          example: "025dcad37e071daa8bfc2df35189009db65692a4ff766856108be1675e870839"
 
     CardSuscriptionResponse:
       description: "Datos de retorno de la inserción de datos de una tarjeta"
